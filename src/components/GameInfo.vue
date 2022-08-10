@@ -1,39 +1,43 @@
 <template>
     <div class="m-content clearbox">
         <div class="m-content-left fl">
-            <div class="m-tt fl">测评</div>
-            <div class="m-evaluation">
-                <ul>
-                    <li v-for="(evaluation,index) in evaluationList" :key="index" style="margin-bottom: 30px">
-                        <p>{{evaluation.content}}</p>
-                        <p>{{evaluation.score}}-{{evaluation.host}}</p>
-                    </li>
-                </ul>
-            </div>
+<!--            <div class="m-tt fl">测评</div>-->
+<!--            <div class="m-evaluation">-->
+<!--                <ul>-->
+<!--                    <li v-for="(evaluation,index) in evaluationList" :key="index" style="margin-bottom: 30px">-->
+<!--                        <p>{{evaluation.content}}</p>-->
+<!--                        <p>{{evaluation.score}}-<span>{{evaluation.host}}</span></p>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
             <!--关于这款游戏-->
             <div class="m-tt fl">关于这款游戏</div>
             <div class="m-introduction">
-                <a href="#"><img class='game-poster' :src="require('../assets/imgs/' + aboutGame.poster)" alt=""></a>
-                <div class="about-content">{{aboutGame.content}}</div>
+                <ul>
+                    <li v-for="(intro,index) in aboutGame" :key="index">
+                        <a href="#"><img class='game-poster' :src="require('../assets/imgs/' + intro.poster)" alt=""></a>
+                        <div class="about-content">{{intro.content}}</div>
+                    </li>
+                </ul>
             </div>
 
             <!-- DLC -->
             <div class="m-tt fl">DLC</div>
             <a href="#" class="fr u-tips">查看全部</a>
             <ul>
-                <li v-for="(dlc,index) in dlcList" :key="index">
+                <li v-for="(dlc,index) in dlcList.length" :key="index">
                     <div class="m-hot clearbox">
                         <div class="m-hot-left fl">
-                            <a href="#"><img src="../assets/imgs/bs3-dlc1.jpg" alt=""  height="128"></a>
+                            <a href="#"><img  :src="require('../assets/imgs/' + dlcIntro[index].poster)" alt=""  height="128" width="128"></a>
                         </div>
                         <div class="m-hot-right fr">
                             <div class="dlc-content">
-                                <h4>{{ dlc.dlcName }}</h4>
-                                <p class="dlc-intro">{{ dlc.dlcIntro }}</p>
+                                <h4>{{ dlcInfo[index].dlcName }}</h4>
+                                <p class="dlc-intro">{{ dlcIntro[index].content }}</p>
                             </div>
                             <div>
-                                <div class="dlc-publish-time">发布于 {{ dlc.dlcPublishDate }}</div>
-                                <a class="dlc-add" href="#">加入购物车 ￥{{ dlc.dlcPrice }}</a>
+                                <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
+                                <a class="dlc-add" href="#">加入购物车 ￥{{ dlcInfo[index].dlcPrice }}</a>
                             </div>
                         </div>
                     </div>
@@ -46,24 +50,24 @@
                 <h2>应用特性</h2>
                 <table>
                     <tr >
-                        <td ><span class="iconfont icon-gouwucheman"></span></td>
-                        <td >单人</td>
+                        <td><span class="iconfont icon-gouwucheman"></span></td>
+                        <td>{{ gameFeatures[0] }}</td>
                     </tr>
                     <tr>
-                        <td ><span class="iconfont icon-duoren"></span></td>
-                        <td>线上玩家对战</td>
+                        <td><span class="iconfont icon-duoren"></span></td>
+                        <td>{{ gameFeatures[1] }}</td>
                     </tr>
                     <tr>
-                        <td ><span class="iconfont icon-youxiguanli"></span></td>
-                        <td >完全支持控制器</td>
+                        <td><span class="iconfont icon-youxiguanli"></span></td>
+                        <td>{{ gameFeatures[2] }}</td>
                     </tr>
                     <tr>
-                        <td ><span class="iconfont icon-bi"></span></td>
-                        <td >成就</td>
+                        <td><span class="iconfont icon-bi"></span></td>
+                        <td>{{ gameFeatures[3] }}</td>
                     </tr>
                     <tr >
-                        <td ><span class="iconfont icon-lianjiezhuangtai"></span></td>
-                        <td >集换式卡牌</td>
+                        <td><span class="iconfont icon-lianjiezhuangtai"></span></td>
+                        <td>{{ gameFeatures[4] }}</td>
                     </tr>
                 </table>
             </div>
@@ -73,23 +77,23 @@
                 <table>
                     <tr>
                         <td >内存</td>
-                        <td>12 GB RAM</td>
+                        <td>{{ minimumConfiguration[0] }}</td>
                     </tr>
                     <tr>
                         <td>显卡</td>
-                        <td>NVIDIA GEFORCE GTX 1060 3 GB </td>
+                        <td>{{ minimumConfiguration[1] }}</td>
                     </tr>
                     <tr >
                         <td>硬盘</td>
-                        <td>60 GB</td>
+                        <td>{{ minimumConfiguration[2] }}</td>
                     </tr>
                     <tr>
                         <td>CPU</td>
-                        <td>INTEL CORE I5-8400</td>
+                        <td>{{ minimumConfiguration[3] }}</td>
                     </tr>
                     <tr>
                         <td>系统</td>
-                        <td>Windows 10</td>
+                        <td>{{ minimumConfiguration[4] }}</td>
                     </tr>
                 </table>
             </div>
@@ -98,23 +102,23 @@
                 <table >
                     <tr >
                         <td >内存</td>
-                        <td>16 GB RAM</td>
+                        <td>{{recommendedConfiguration[0]}}</td>
                     </tr>
                     <tr>
                         <td>显卡</td>
-                        <td> NVIDIA GEFORCE GTX 1070 8 GB</td>
+                        <td> {{recommendedConfiguration[1]}}</td>
                     </tr>
                     <tr >
                         <td >硬盘</td>
-                        <td >60 GB</td>
+                        <td >{{recommendedConfiguration[2]}}</td>
                     </tr>
                     <tr >
                         <td >CPU</td>
-                        <td > INTEL CORE I7-8700K</td>
+                        <td >{{recommendedConfiguration[3]}}</td>
                     </tr>
                     <tr >
                         <td>系统</td>
-                        <td>Windows 10/11</td>
+                        <td>{{recommendedConfiguration[4]}}</td>
                     </tr>
                 </table>
             </div>
@@ -124,15 +128,15 @@
                 <table>
                     <tr>
                         <td>界面</td>
-                        <td>CN EN JP</td>
+                        <td><ul><li v-for="(item,inedx) in uiLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
                     </tr>
                     <tr>
                         <td >完全音频</td>
-                        <td>EN </td>
+                        <td><ul><li v-for="(item,inedx) in soundLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
                     </tr>
                     <tr >
                         <td>文本</td>
-                        <td >CN EN JP </td>
+                        <td ><ul><li v-for="(item,inedx) in textLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
                     </tr>
                 </table>
             </div>
@@ -143,69 +147,227 @@
 <script>
 export default {
     name: "GameInfo",
-    props:['game_id'],
+    props:['gid'],
     data() {
         return {
-            evaluationList:[
-                {
-                    host:'IGN',
-                    score:'10/10',
-                    content:'"Put a ring on it."' },
-                {
-                    host:'Gaming Bible',
-                    score:'10/10',
-                    content:'"An unmissable open-world masterpiece."'},
-                {
-                    host:'Games Radar',
-                    score:'5/5',
-                    content:'"Exploration is jaw dropping."'},
-            ],
-            aboutGame:{
-                poster:'ring.gif',
-                content:'・充满刺激的辽阔世界\n' +
-                    '无缝连接的辽阔世界──尽情探索状况多变的开放场景，构造复杂、立体的巨大地下迷宫。\n' +
-                    '在探索新发现时感到欣喜，在征服强敌时感到成就感十足，丰富内容等你体会。\n' +
-                    '\n' +
-                    '・专属于你的角色\n' +
-                    '不只能自订操纵角色的外表，更能自行搭配武器、装备，与魔法──\n' +
-                    '想成为力量取胜的顽强战士，或选择在魔法领域登峰造极，都能照自己的游玩风格决定。\n' +
-                    '\n' +
-                    '・源自神话的群像剧\n' +
-                    '片段破碎，却又多彩的故事──以“交界地”为舞台登场的角色们各有主张，\n' +
-                    '于是在利害关系之下谱成的群像剧，就此展开。\n' +
-                    '\n' +
-                    '・与其他玩家维持非即时连系的独特系统\n' +
-                    '除了能与其他玩家一同游玩的多人联机游玩以外，\n' +
-                    '本游戏也有非即时联机系统，能借此得知其他玩家的存在。'
-            },
+            aboutGame:[],
+            dlcInfo:[],
+            dlcIntro:[],
             dlcList:[
-                {
-                    index:0,
-                    dlcName:'DARK SOULS™ III - Ashes of Ariandel™',
-                    dlcCover:'dlc1.jpg',
-                    dlcIntro:'"你就是无火的余灰。\n' +
-                        'Dark Souls™ III Season Pass内容之一。取得DLC包“艾雷德尔之烬，”拓展您的游戏体验。\n' +
-                        '踏上探索雪白世界──艾雷德尔的旅程，挑战新地图、头目、敌人，以及取得新武器、防具套装与法术。\n' +
-                        '您愿意接受挑战，再次拥抱黑暗吗？"',
-                    dlcPublishDate:'2016年10月25日',
-                    dlcPrice:'78.00',
-                },
-                {
-                    index:1,
-                    dlcName:'DARK SOULS™ III - The Ringed City™',
-                    dlcCover:'dlc2.jpg',
-                    dlcIntro:'您毋须畏惧黑暗，灰烬大人。\n' +
-                        '赢得具指标性的Golden Joystick Awards 2016 Game of the year RPG──DARK SOULS III，即将迎来最后一个DLC包。\n' +
-                        'DARK SOULS III的最后一段旅程──环印城，前往探索末世所在，发掘新区域、新头目、新装备、法术，以及道具。\n' +
-                        '是新世界，也是最终章──尽情体验仅有宫崎英高先生才能创造出的史诗最终篇章。',
-                    dlcPublishDate:'2017年3月28日',
-                    dlcPrice:'78.00',
-                },
-            ]
+                // {
+                //     dlcName:'DARK SOULS™ III - Ashes of Ariandel™',
+                //     dlcCover:'dlc1.jpg',
+                //     dlcIntro:'"你就是无火的余灰。\n' +
+                //         'Dark Souls™ III Season Pass内容之一。取得DLC包“艾雷德尔之烬，”拓展您的游戏体验。\n' +
+                //         '踏上探索雪白世界──艾雷德尔的旅程，挑战新地图、头目、敌人，以及取得新武器、防具套装与法术。\n' +
+                //         '您愿意接受挑战，再次拥抱黑暗吗？"',
+                //     dlcPublishDate:'2016年10月25日',
+                //     dlcPrice:'78.00',
+                //     dlcDiscount:100,
+                // },
+                // {
+                //     dlcName:'DARK SOULS™ III - The Ringed City™',
+                //     dlcCover:'dlc2.jpg',
+                //     dlcIntro:'您毋须畏惧黑暗，灰烬大人。\n' +
+                //         '赢得具指标性的Golden Joystick Awards 2016 Game of the year RPG──DARK SOULS III，即将迎来最后一个DLC包。\n' +
+                //         'DARK SOULS III的最后一段旅程──环印城，前往探索末世所在，发掘新区域、新头目、新装备、法术，以及道具。\n' +
+                //         '是新世界，也是最终章──尽情体验仅有宫崎英高先生才能创造出的史诗最终篇章。',
+                //     dlcPublishDate:'2017年3月28日',
+                //     dlcPrice:'78.00',
+                //     dlcDiscount:100,
+                // },
+            ],
+            gameFeatures:[],
+            minimumConfiguration:[],
+            recommendedConfiguration:[],
+            uiLanguage:[],
+            soundLanguage:[],
+            textLanguage:[],
         }
     },
+    mounted() {
+        this.getConfigData('0000000006');
+        this.getAboutData('0000000006');
+        this.getDLC();
+    },
     methods:{
+        getConfigData:function (gid){
+            var self = this;
+            console.log('++++++')
+            if(gid.length !== 0)
+            {
+                this.$axios.post('api/gamedetail/getGameConfigurations', {
+                    game_id: gid
+                }).then( res => {
+                    let i;
+                    switch(res.data.result){
+                        case 1:
+                            console.log("GameCarousel 请求成功");
+                            break;
+                        default:
+                            console.log('GameCarousel 请求失败')
+                            break;
+                    }
+                    for(i in res.data.game_features)
+                    {
+                        console.log('get   ' + res.data.game_features[i])
+                        self.gameFeatures.push(res.data.game_features[i]) ;
+                    }
+                    for(i in res.data.minimum_configuration)
+                    {
+                        console.log('get   ' + res.data.minimum_configuration[i])
+                        self.minimumConfiguration.push(res.data.minimum_configuration[i]) ;
+                    }
+                    for(i in res.data.recommended_configuration)
+                    {
+                        self.recommendedConfiguration.push(res.data.recommended_configuration[i]) ;
+                    }
+                    for(i in res.data.ui_language)
+                    {
+                        self.uiLanguage.push(res.data.ui_language[i]);
+                    }
+                    for(i in res.data.sound_language)
+                    {
+                        self.soundLanguage.push(res.data.sound_language[i]);
+                    }
+                    for(i in res.data.text_language)
+                    {
+                        self.textLanguage.push(res.data.text_language[i]);
+                    }
 
+
+                }).catch( err => {
+                    console.log(err);
+                })
+            }
+            else{
+                alert('游戏ID不能为空')
+            }
+
+        },
+        getAboutData:function (gid){
+            var self = this;
+            console.log('++++++ getAboutData')
+            if(gid.length !== 0)
+            {
+                this.$axios.post('api/gamedetail/getGameIntro', {
+                    game_id: gid
+                }).then( res => {
+                    let i;
+                    switch(res.data.result){
+                        case 1:
+                            console.log("GameCarousel 请求成功");
+                            break;
+                        default:
+                            console.log('GameCarousel 请求失败')
+                            break;
+                    }
+                    for(i in res.data.about_game)
+                    {
+                        console.log('get   ' + res.data.about_game[i].poster)
+                        console.log('get   ' + res.data.about_game[i].content)
+                        var path = res.data.about_game[i].poster + '.gif'
+                        self.aboutGame.push({
+                            poster: path,
+                            content: res.data.about_game[i].content,
+                        }) ;
+                    }
+                    for(i in res.data.dlc_list)
+                    {
+                        console.log('get   ' + res.data.dlc_list[i])
+                        self.dlcList.push(res.data.dlc_list[i]) ;
+                    }
+                }).catch( err => {
+                    console.log(err);
+                })
+            }
+            else{
+                alert('游戏ID不能为空')
+            }
+
+        },
+        getGameInfo:function (gid){
+            var self = this;
+            console.log('++++++')
+            if(gid.length !== 0)
+            {
+                this.$axios.post('api/gamedetail/getGameCarousel', {
+                    game_id: gid
+                }).then( res => {
+                    switch(res.data.result){
+                        case 1:
+                            console.log("GameCarousel 请求成功");
+                            break;
+                        default:
+                            console.log('GameCarousel 请求失败')
+                            break;
+                    }
+                    console.log(res.data.game_name)
+                    console.log(res.data.publish_date)
+                    console.log(res.data.price)
+                    console.log(res.data.discount)
+                    self.dlcInfo.push(
+                        {
+                            dlcName:res.data.game_name,
+                            dlcPublishDate:res.data.publish_date,
+                            dlcPrice:res.data.price,
+                            dlcDiscount:res.data.discount,
+                        }
+                    )
+
+                }).catch( err => {
+                    console.log(err);
+                })
+            }
+            else{
+                alert('游戏明不能为空')
+            }
+        },
+        getAboutInfo:function (gid){
+            var self = this;
+            console.log('++++++ getAboutData')
+            if(gid.length !== 0)
+            {
+                this.$axios.post('api/gamedetail/getGameIntro', {
+                    game_id: gid
+                }).then( res => {
+                    let i;
+                    switch(res.data.result){
+                        case 1:
+                            console.log("GameCarousel 请求成功");
+                            break;
+                        default:
+                            console.log('GameCarousel 请求失败')
+                            break;
+                    }
+                    for(i in res.data.about_game)
+                    {
+                        console.log('get   ' + res.data.about_game[i].poster)
+                        console.log('get   ' + res.data.about_game[i].content)
+                        var path = res.data.about_game[i].poster + '.gif'
+                        self.dlcIntro.push({
+                            poster:path,
+                            content: res.data.about_game[i].content,
+                        }) ;
+                        break;
+                    }
+                }).catch( err => {
+                    console.log(err);
+                })
+            }
+            else{
+                alert('游戏ID不能为空')
+            }
+        },
+        getDLC:function (){
+            // for(let i in this.dlcList)
+            // {
+            //     console.log(this.dlcList[i]);
+            //     this.getGameInfo(this.dlcList[i])
+            // }
+            this.getGameInfo('0000000006');
+            this.getAboutInfo('0000000006');
+        },
     }
 }
 </script>
