@@ -62,7 +62,7 @@
 <script>
 export default {
     name: "GameCarousel",
-    props:['game_id'],
+    props:['game_id','time_out'],
     data() {
         return {
             basic_source_path:"../../../ExGame-Asset/Game/",
@@ -121,7 +121,7 @@ export default {
     mounted() {
         this.getInfo(this.game_id);
         // 用设置延时的方法解决异步
-        setTimeout(this.fun,200)
+        setTimeout(this.fun,400)
     },
     methods:{
         getInfo:function (gid){
@@ -192,7 +192,6 @@ export default {
         },
         fun:function (){
             this.click2Choose(0);
-            this.discount = 50;
         },
         getSourcePath:function(index,type) {
             console.log(index.toString() + '   ' + type.toString())
@@ -223,9 +222,9 @@ export default {
             mask.style.border = '3px solid #eee'
             console.log('--------end');
             if(this.mediaMap[pos].srcType===1)
-                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/Game/' + this.getSourcePath(this.onPlay + 1,this.mediaMap[pos].srcType));
+                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay + 1,this.mediaMap[pos].srcType));
             else
-                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/Game/' + this.getSourcePath(this.onPlay + 1,this.mediaMap[pos].srcType));
+                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay + 1,this.mediaMap[pos].srcType));
 
             if(this.launched===false) {
                 this.init();
@@ -470,6 +469,7 @@ a{
     line-height: 45px;
     font-weight: 900;
     background-color: #3B9CFF;
+    border-radius: 10px;
 }
 
 </style>

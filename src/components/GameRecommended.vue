@@ -1,6 +1,7 @@
 <template>
     <div class="m-recommended clearbox">
-        <ul style="margin: auto;width: 1000px;">
+        <div class="m-tt fl">推荐</div>
+        <ul style="margin: auto;width: 1000px;" class="clearbox">
             <li v-for="(game,index) in gameList.length" :key="index">
                 <div class="m-game-rec fl">
                     <div style="height: 125px;overflow: hidden">
@@ -17,6 +18,7 @@
 <script>
 export default {
     name: "GameRecommended",
+    props:['game_id','user_id','time_out'],
     data(){
         return{
             gameList:[],
@@ -26,7 +28,7 @@ export default {
     },
     mounted() {
         this.getData('0000000002');
-        setTimeout(this.fun,300)
+        setTimeout(this.fun,800)
     },
     methods:{
         getData:function(gid){
@@ -164,6 +166,14 @@ a{
 .clearbox{
     clear:both;
 }
+
+.m-tt{
+    font-weight: normal;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
 .m-recommended{
     width: 1005px;
     margin: 0 auto;

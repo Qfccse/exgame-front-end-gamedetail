@@ -1,156 +1,159 @@
 <template>
-    <div class="m-page clearbox">
-        <div class="comment-filter  clearbox">
-            <div class="fl">
-                <div class="filter-box" style="height: 80px" @click="click2Choose(1)">
-                    <div class="filter-title clearbox">
-                        测评结果
-                        <select  disabled class="filter-bar fr"></select>
-                    </div>
-                    <div>
-                        <div  v-if="filters[0].cur===0" style="margin-left: 10px;margin-top:5px;font-size: 20px;font-weight: bolder">
-                            全部
+    <div style="width: 1005px;margin: auto">
+        <div class="m-tt fl">用户测评</div>
+        <div class="m-page clearbox">
+            <div class="comment-filter  clearbox">
+                <div class="fl">
+                    <div class="filter-box" style="height: 80px" @click="click2Choose(1)">
+                        <div class="filter-title clearbox">
+                            测评结果
+                            <select  disabled class="filter-bar fr"></select>
                         </div>
-                        <div class="comment-rate" v-else>
-                            <div class="m-rate-left fl" style="margin-top: 8px">
-                                <div v-if="filters[0].cur===1" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
-                                    <img  src="../assets/imgs/emoji-laughing.svg" style="filter: drop-shadow(25px 0px orange)" height="25" alt="">
-                                </div>
-                                <div v-else >
-                                    <img src="../assets/imgs/emoji-frown.svg" height="25" alt="">
-                                </div>
+                        <div>
+                            <div  v-if="filters[0].cur===0" style="margin-left: 10px;margin-top:5px;font-size: 20px;font-weight: bolder">
+                                全部
                             </div>
-                            <div class="m-rate-right fl" style="margin-top: 10px">
-                                <div class="rate-name" >
-                                    <span v-if="filters[0].cur===1" style="color: orange">推荐</span>
-                                    <span v-else>不推荐</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <ul id="s1"  class="select-bar" style="z-index: 999;position: absolute;display: none">
-                    <li id="s1l1" @click="filterChoose(1,1)">&nbsp;&nbsp;{{ filters[0].valueList[0] }}</li>
-                    <li id="s1l2" @click="filterChoose(1,2)">&nbsp;&nbsp;{{ filters[0].valueList[1] }}</li>
-                    <li id="s1l3" @click="filterChoose(1,3)">&nbsp;&nbsp;{{ filters[0].valueList[2] }}</li>
-                </ul>
-            </div>
-            <div class="fl">
-                <div>
-                    <div class="filter-box"  @click="click2Choose(2)">
-                        <div class="filter-title">
-                            获得方式
-                            <select  disabled  class="filter-bar fr"></select>
-                            <span class="fr">{{ filters[1].valueList[filters[1].cur] }}</span>
-                        </div>
-                    </div>
-                    <ul id="s2"   class="select-bar" style="z-index: 999;position: absolute;display: none">
-                        <li id="s2l1" @click="filterChoose(2,1)">&nbsp;&nbsp;{{ filters[1].valueList[0] }}</li>
-                        <li id="s2l2" @click="filterChoose(2,2)">&nbsp;&nbsp;{{ filters[1].valueList[1] }}</li>
-                        <li id="s2l3" @click="filterChoose(2,3)">&nbsp;&nbsp;{{ filters[1].valueList[2] }}</li>
-                    </ul>
-                </div>
-                <div>
-                    <div class="filter-box"  @click="click2Choose(3)">
-                        <div class="filter-title">
-                            时间
-                            <select  disabled  class="filter-bar fr"></select>
-                            <span class="fr">{{ filters[2].valueList[filters[2].cur] }}</span>
-                        </div>
-                    </div>
-                    <ul id="s3"  class="select-bar"  style="z-index: 999;position: absolute;display: none">
-                        <li id="s3l1" @click="filterChoose(3,1)">&nbsp;&nbsp;{{ filters[2].valueList[0] }}</li>
-                        <li id="s3l2" @click="filterChoose(3,2)">&nbsp;&nbsp;{{ filters[2].valueList[1] }}</li>
-                        <li id="s3l3" @click="filterChoose(3,3)">&nbsp;&nbsp;{{ filters[2].valueList[2] }}</li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-        <div class="tab-bar clearbox">
-            <span class="comment-count fl">找到{{commentNum}}条测评</span>
-            <ul class="comment-tab fr">
-                <li @click="tab(index)"  v-for="(item,index) in items"
-                    :class="{active : index===curId}" :key="index" style="display: inline;margin-left: 20px">{{item.item}}
-                </li>
-            </ul>
-        </div>
-        <div class="tab-con clearbox">
-            <div style="height: 20px"></div>
-            <div class="comment-tip1"  v-show="curId===0&&comments.length!==0">
-                <span class="line1"></span>
-                &emsp;10天内的测评&emsp;
-                <span class="line2"></span>
-            </div>
-            <div  class="comment-tip2" v-show="comments.length===0">暂无评论</div>
-            <ul class="most-value fl">
-                <li v-for="(comment,index) in comments" :key="index">
-                    <div class="m-comment fl">
-                        <div class="comment-creator fl">
-                            <div class="user-head">
-                                <img  :src="require('../assets/imgs/' + comment.user.head)"  alt="" height="60" width="60" >
-                            </div>
-                            <div class="user-info">
-                                <p>{{comment.user.name}}</p>
-                                <p>账户内拥有{{comment.user.gameNum}}项产品</p>
-                                <p>{{comment.user.commentNum}}篇测评</p>
-                            </div>
-                        </div>
-                        <!--                    </div>-->
-                        <div class="m-comment-right fr">
-                            <div class="comment-rate">
-                                <div class="m-rate-left fl">
-                                    <div v-if="comment.detail.rate>=3" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
+                            <div class="comment-rate" v-else>
+                                <div class="m-rate-left fl" style="margin-top: 8px">
+                                    <div v-if="filters[0].cur===1" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
                                         <img  src="../assets/imgs/emoji-laughing.svg" style="filter: drop-shadow(25px 0px orange)" height="25" alt="">
                                     </div>
                                     <div v-else >
                                         <img src="../assets/imgs/emoji-frown.svg" height="25" alt="">
                                     </div>
                                 </div>
-                                <div class="m-rate-right fl">
+                                <div class="m-rate-right fl" style="margin-top: 10px">
                                     <div class="rate-name" >
-                                        <span v-if="comment.detail.rate>3">推荐</span>
+                                        <span v-if="filters[0].cur===1" style="color: orange">推荐</span>
                                         <span v-else>不推荐</span>
                                     </div>
-                                </div>
-                                <div class="rate-count-time fr">
-                                    于 {{comment.user.accessTime}}日获得该游戏
-                                    （通过
-                                    <span v-if="comment.user.viaCDK===1">CKD</span>
-                                    <span v-else>购买</span>
-                                    获得）
-                                </div>
-                                <div class="line3 clearbox"></div>
-                            </div>
-                            <div class="comment-main" >
-                                <div class="comment-time">
-                                    发布于：{{comment.detail.date}}
-                                </div>
-                                <div class="wrapper">
-                                    <input :id="getID(index+1,'exp')" class="exp"  type="checkbox">
-                                    <div class="text">
-                                        <label class="btn" :for="getID(index+1,'exp')"></label>
-                                        {{comment.detail.content}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="comment-judge" >
-                                <div class="rate-icons" v-show="curId===0">
-                                    <span class="rate-ico"  :id="getRateID(index+1,'rate-ico-1-',1)" @click="addRate(index,1,1)">有用（{{comment.rate.goodCount}}）</span>
-                                    <span class="rate-ico" :id="getRateID(index+1,'rate-ico-2-',1)" @click="addRate(index,2,1)">没用（{{comment.rate.badCount}}）</span>
-                                </div>
-                                <div class="rate-icons" v-show="curId===1">
-                                    <span class="rate-ico"  :id="getRateID(index+1,'rate-ico-1-',2)" @click="addRate(index,1,2)">有用（{{comment.rate.goodCount}}）</span>
-                                    <span class="rate-ico" :id="getRateID(index+1,'rate-ico-2-',2)" @click="addRate(index,2,2)">没用（{{comment.rate.badCount}}）</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </li>
-            </ul>
-        </div>
-        <div class="more-comments clearbox" @click="getMoreComments()" v-show="commentNum>0&&this.isEnd===false">
-            <span > 查看更多测评 <i class="icon-downarrow"></i></span>
+                    <ul id="s1"  class="select-bar" style="z-index: 999;position: absolute;display: none">
+                        <li id="s1l1" @click="filterChoose(1,1)">&nbsp;&nbsp;{{ filters[0].valueList[0] }}</li>
+                        <li id="s1l2" @click="filterChoose(1,2)">&nbsp;&nbsp;{{ filters[0].valueList[1] }}</li>
+                        <li id="s1l3" @click="filterChoose(1,3)">&nbsp;&nbsp;{{ filters[0].valueList[2] }}</li>
+                    </ul>
+                </div>
+                <div class="fl">
+                    <div>
+                        <div class="filter-box"  @click="click2Choose(2)">
+                            <div class="filter-title">
+                                获得方式
+                                <select  disabled  class="filter-bar fr"></select>
+                                <span class="fr">{{ filters[1].valueList[filters[1].cur] }}</span>
+                            </div>
+                        </div>
+                        <ul id="s2"   class="select-bar" style="z-index: 999;position: absolute;display: none">
+                            <li id="s2l1" @click="filterChoose(2,1)">&nbsp;&nbsp;{{ filters[1].valueList[0] }}</li>
+                            <li id="s2l2" @click="filterChoose(2,2)">&nbsp;&nbsp;{{ filters[1].valueList[1] }}</li>
+                            <li id="s2l3" @click="filterChoose(2,3)">&nbsp;&nbsp;{{ filters[1].valueList[2] }}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="filter-box"  @click="click2Choose(3)">
+                            <div class="filter-title">
+                                时间
+                                <select  disabled  class="filter-bar fr"></select>
+                                <span class="fr">{{ filters[2].valueList[filters[2].cur] }}</span>
+                            </div>
+                        </div>
+                        <ul id="s3"  class="select-bar"  style="z-index: 999;position: absolute;display: none">
+                            <li id="s3l1" @click="filterChoose(3,1)">&nbsp;&nbsp;{{ filters[2].valueList[0] }}</li>
+                            <li id="s3l2" @click="filterChoose(3,2)">&nbsp;&nbsp;{{ filters[2].valueList[1] }}</li>
+                            <li id="s3l3" @click="filterChoose(3,3)">&nbsp;&nbsp;{{ filters[2].valueList[2] }}</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-bar clearbox">
+                <span class="comment-count fl">找到{{commentNum}}条测评</span>
+                <ul class="comment-tab fr">
+                    <li @click="tab(index)"  v-for="(item,index) in items"
+                        :class="{active : index===curId}" :key="index" style="display: inline;margin-left: 20px">{{item.item}}
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-con clearbox">
+                <div style="height: 20px"></div>
+                <div class="comment-tip1"  v-show="curId===0&&comments.length!==0">
+                    <span class="line1"></span>
+                    &emsp;10天内的测评&emsp;
+                    <span class="line2"></span>
+                </div>
+                <div  class="comment-tip2" v-show="comments.length===0">暂无评论</div>
+                <ul class="most-value fl">
+                    <li v-for="(comment,index) in comments" :key="index">
+                        <div class="m-comment fl">
+                            <div class="comment-creator fl">
+                                <div class="user-head">
+                                    <img  :src="require('../assets/imgs/' + comment.user.head)"  alt="" height="60" width="60" >
+                                </div>
+                                <div class="user-info">
+                                    <p>{{comment.user.name}}</p>
+                                    <p>账户内拥有{{comment.user.gameNum}}项产品</p>
+                                    <p>{{comment.user.commentNum}}篇测评</p>
+                                </div>
+                            </div>
+                            <!--                    </div>-->
+                            <div class="m-comment-right fr">
+                                <div class="comment-rate">
+                                    <div class="m-rate-left fl">
+                                        <div v-if="comment.detail.rate>=3" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
+                                            <img  src="../assets/imgs/emoji-laughing.svg" style="filter: drop-shadow(25px 0px orange)" height="25" alt="">
+                                        </div>
+                                        <div v-else >
+                                            <img src="../assets/imgs/emoji-frown.svg" height="25" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="m-rate-right fl">
+                                        <div class="rate-name" >
+                                            <span v-if="comment.detail.rate>3">推荐</span>
+                                            <span v-else>不推荐</span>
+                                        </div>
+                                    </div>
+                                    <div class="rate-count-time fr">
+                                        于 {{comment.user.accessTime}}日获得该游戏
+                                        （通过
+                                        <span v-if="comment.user.viaCDK===1">CKD</span>
+                                        <span v-else>购买</span>
+                                        获得）
+                                    </div>
+                                    <div class="line3 clearbox"></div>
+                                </div>
+                                <div class="comment-main" >
+                                    <div class="comment-time">
+                                        发布于：{{comment.detail.date}}
+                                    </div>
+                                    <div class="wrapper">
+                                        <input :id="getID(index+1,'exp')" class="exp"  type="checkbox">
+                                        <div class="text">
+                                            <label class="btn" :for="getID(index+1,'exp')"></label>
+                                            {{comment.detail.content}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comment-judge" >
+                                    <div class="rate-icons" v-show="curId===0">
+                                        <span class="rate-ico"  :id="getRateID(index+1,'rate-ico-1-',1)" @click="addRate(index,1,1)">有用（{{comment.rate.goodCount}}）</span>
+                                        <span class="rate-ico" :id="getRateID(index+1,'rate-ico-2-',1)" @click="addRate(index,2,1)">没用（{{comment.rate.badCount}}）</span>
+                                    </div>
+                                    <div class="rate-icons" v-show="curId===1">
+                                        <span class="rate-ico"  :id="getRateID(index+1,'rate-ico-1-',2)" @click="addRate(index,1,2)">有用（{{comment.rate.goodCount}}）</span>
+                                        <span class="rate-ico" :id="getRateID(index+1,'rate-ico-2-',2)" @click="addRate(index,2,2)">没用（{{comment.rate.badCount}}）</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="more-comments clearbox" @click="getMoreComments()" v-show="commentNum>0&&this.isEnd===false">
+                <span > 查看更多测评 <i class="icon-downarrow"></i></span>
+            </div>
         </div>
     </div>
 </template>
@@ -158,6 +161,7 @@
 <script>
 export default {
     name: "GameComments",
+    props:['game_id','user_id','time_out'],
     data(){
         return {
             filters:[
@@ -226,56 +230,6 @@ export default {
             setTimeout(this.pic,610);
             // this.comments = this.funFilter(this.comments,i,ii);
         },
-        // funFilter:function (comment_list,bar,type){
-        //     if(type===1)
-        //     {
-        //         return comment_list;
-        //     }
-        //     var temp_list = [];
-        //     if(bar===1&&type===2)
-        //     {
-        //         for(let i=0;i<this.comments.length;i++)
-        //         {
-        //             if(this.comments[i].detail.rate>=3)
-        //             {
-        //                 temp_list.push(this.comments[i])
-        //             }
-        //         }
-        //
-        //     }
-        //     if(bar===1&&type===3)
-        //     {
-        //         for(let i=0;i<this.mostValuedComments.length;i++)
-        //         {
-        //             if(this.mostValuedComments[i].detail.rate<3)
-        //             {
-        //                 temp_list.push(this.mostValuedComments[i])
-        //             }
-        //         }
-        //     }
-        //     if(bar===2&&type===2)
-        //     {
-        //         for(let i=0;i<this.mostValuedComments.length;i++)
-        //         {
-        //             if(this.mostValuedComments[i].user.viaCDK===1)
-        //             {
-        //                 temp_list.push(this.mostValuedComments[i])
-        //             }
-        //         }
-        //     }
-        //     if(bar===2&&type===3)
-        //     {
-        //         for(let i=0;i<this.mostValuedComments.length;i++)
-        //         {
-        //             if(this.mostValuedComments[i].user.viaCDK===0)
-        //             {
-        //                 temp_list.push(this.mostValuedComments[i])
-        //             }
-        //         }
-        //     }
-        //
-        //     return temp_list;
-        // },
         tab (index) {
             if(index===0)
             {
@@ -612,8 +566,14 @@ a{
 .clearbox{
     clear:both;
 }
+.m-tt{
+    font-weight: normal;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    font-size: 20px;
+}
 .m-page{
-    width: 1055px;
+    width: 1005px;
     min-height: 600px;
     margin: 0 auto;
     overflow:hidden;
@@ -622,7 +582,7 @@ a{
 
 .comment-filter{
     margin: 50px auto;
-    width: 1000px;
+    width: 950px;
     height: 110px;
     border-bottom: #aaaaaa 1px solid;
 }
@@ -726,7 +686,7 @@ a{
     margin-right: 25px;
 }
 .m-comment{
-    width: 1005px;
+    width: 955px;
     margin-left: 25px;
     background-color: #fff;
     background-image: linear-gradient(#333333, #666666);
@@ -736,7 +696,7 @@ a{
 .comment-creator{
     margin-top: 80px;
     text-align: center;
-    width: 300px;
+    width: 280px;
 }
 .user-head{
     border:  white 2px solid;
@@ -793,7 +753,7 @@ a{
 }
 
 .m-comment-right{
-    width: 700px;
+    width: 670px;
     background-color: #fff;
     margin-top: 3px;
     margin-bottom: 3px;
@@ -818,7 +778,7 @@ a{
     margin-right: 10px;
     margin-left: 15px;
     /*margin: auto;*/
-    width: 670px;
+    width: 640px;
     overflow: hidden;
     /*border-radius: 8px;*/
     /*padding: 15px ;*/

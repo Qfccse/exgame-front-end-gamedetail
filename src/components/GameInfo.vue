@@ -11,19 +11,6 @@
 <!--                </ul>-->
 <!--            </div>-->
             <!--关于这款游戏-->
-            <div class="m-tt fl">关于这款游戏</div>
-            <div class="m-introduction">
-                <ul>
-                    <li v-for="(intro,index) in aboutGame" :key="index">
-                        <a href="#">
-<!--                            <img class="game-poster" v-if="launchedIntro==false"  :src="require('../../../ExGame-Asset/Game/0000000006/Cover/cover.gif')"  alt="">-->
-                            <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
-                        </a>
-                        <div class="about-content">{{intro.content}}</div>
-                    </li>
-                </ul>
-            </div>
-
             <!-- DLC -->
             <div class="m-tt fl">DLC</div>
             <ul>
@@ -45,6 +32,20 @@
                     </div>
                 </li>
             </ul>
+            <div class="m-tt fl">关于这款游戏</div>
+            <div class="m-introduction">
+                <ul>
+                    <li v-for="(intro,index) in aboutGame" :key="index">
+                        <a href="#">
+<!--                            <img class="game-poster" v-if="launchedIntro==false"  :src="require('../../../ExGame-Asset/Game/0000000006/Cover/cover.gif')"  alt="">-->
+                            <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
+                        </a>
+                        <div class="about-content">{{intro.content}}</div>
+                    </li>
+                </ul>
+            </div>
+
+
         </div>
         <!--			应用特性-->
         <div class="m-content-right fr">
@@ -149,7 +150,7 @@
 <script>
 export default {
     name: "GameInfo",
-    props:['gid'],
+    props:['gid','time_out'],
     data() {
         return {
             launchedIntro:false,
@@ -167,11 +168,14 @@ export default {
         }
     },
     mounted() {
-        this.getConfigData('0000000006');
-        this.getAboutData('0000000006');
-        this.getDLC();
+       setTimeout(this.fun,600)
     },
     methods:{
+        fun(){
+            this.getConfigData('0000000006');
+            this.getAboutData('0000000006');
+            this.getDLC();
+        },
         getConfigData:function (gid){
             var self = this;
             console.log('++++++')
@@ -352,10 +356,6 @@ export default {
             this.getGameInfo('0000000006');
             this.getAboutInfo('0000000006');
         },
-        lauchInit:function (){
-            this.launchedIntro = true;
-            this.launchedDLC = true;
-        }
     }
 }
 </script>
@@ -387,7 +387,6 @@ a{
 .m-content{
     width: 1005px;
     margin: 0 auto;
-    min-height: 1200px;
     margin-top: 20px;
     margin-bottom: 50px;
 }
@@ -395,7 +394,6 @@ a{
 /*游戏详情*/
 .m-content-left{
     width: 705px;
-    height: 1200px;
 }
 .game-poster{
     width: 100%;
@@ -426,6 +424,7 @@ a{
     background-color: #fff;
     overflow: hidden;
     position: relative;
+    border-radius: 10px;
     /*border: black 2px solid;*/
 }
 .m-introduction p{
@@ -453,7 +452,7 @@ a{
     z-index: 999;
 }
 .m-content-right{
-    height: 1200px;
+    /*height: 1200px;*/
     width: 285px;
 }
 
@@ -462,6 +461,7 @@ a{
     height: 272px;
     background-color: #fff;
     margin-bottom: 20px;
+    border-radius: 10px;
     /*border: black 2px solid;*/
 }
 .panel h2{
@@ -528,6 +528,7 @@ a{
     height: 148px;
     background-color: #fff;
     margin-bottom: 20px;
+    border-radius: 10px;
     /*border: black 1px solid;*/
 }
 .m-hot-left{
