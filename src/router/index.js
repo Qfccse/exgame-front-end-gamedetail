@@ -4,6 +4,7 @@ import loginRegister from '../views/LoginRegister.vue'
 import GameDetail from "../views/GameDetail.vue";
 import TEST from "@/views/TEST";
 import GameCarousel from "@/components/GameCarousel";
+import HomePage from "@/views/HomePage";
 Vue.use(VueRouter)
 
 const routes = [

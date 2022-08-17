@@ -15,7 +15,10 @@
             <div class="m-introduction">
                 <ul>
                     <li v-for="(intro,index) in aboutGame" :key="index">
-                        <a href="#"><img class='game-poster' :src="require('../assets/imgs/' + intro.poster)" alt=""></a>
+                        <a href="#">
+<!--                            <img class="game-poster" v-if="launchedIntro==false"  :src="require('../../../ExGame-Asset/Game/0000000006/Cover/cover.gif')"  alt="">-->
+                            <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
+                        </a>
                         <div class="about-content">{{intro.content}}</div>
                     </li>
                 </ul>
@@ -23,21 +26,20 @@
 
             <!-- DLC -->
             <div class="m-tt fl">DLC</div>
-            <a href="#" class="fr u-tips">查看全部</a>
             <ul>
-                <li v-for="(dlc,index) in dlcList.length" :key="index">
+                <li v-for="(dlc,index) in 3" :key="index">
                     <div class="m-hot clearbox">
                         <div class="m-hot-left fl">
-                            <a href="#"><img  :src="require('../assets/imgs/' + dlcIntro[index].poster)" alt=""  height="128" width="128"></a>
+                            <a href="#"><img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128"></a>
                         </div>
                         <div class="m-hot-right fr">
                             <div class="dlc-content">
-                                <h4>{{ dlcInfo[index].dlcName }}</h4>
+                                <p class="dlc-name">{{ dlcInfo[index].dlcName }}<p>
                                 <p class="dlc-intro">{{ dlcIntro[index].content }}</p>
                             </div>
                             <div>
                                 <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
-                                <a class="dlc-add" href="#">加入购物车 ￥{{ dlcInfo[index].dlcPrice }}</a>
+                                <a class="dlc-add" href="#">加入购物车 ￥{{ dlcInfo[index].dlcPrice * (100- dlcInfo[index].discount)/100 }}</a>
                             </div>
                         </div>
                     </div>
@@ -150,33 +152,12 @@ export default {
     props:['gid'],
     data() {
         return {
+            launchedIntro:false,
+            launchedDLC:false,
             aboutGame:[],
             dlcInfo:[],
             dlcIntro:[],
-            dlcList:[
-                // {
-                //     dlcName:'DARK SOULS™ III - Ashes of Ariandel™',
-                //     dlcCover:'dlc1.jpg',
-                //     dlcIntro:'"你就是无火的余灰。\n' +
-                //         'Dark Souls™ III Season Pass内容之一。取得DLC包“艾雷德尔之烬，”拓展您的游戏体验。\n' +
-                //         '踏上探索雪白世界──艾雷德尔的旅程，挑战新地图、头目、敌人，以及取得新武器、防具套装与法术。\n' +
-                //         '您愿意接受挑战，再次拥抱黑暗吗？"',
-                //     dlcPublishDate:'2016年10月25日',
-                //     dlcPrice:'78.00',
-                //     dlcDiscount:100,
-                // },
-                // {
-                //     dlcName:'DARK SOULS™ III - The Ringed City™',
-                //     dlcCover:'dlc2.jpg',
-                //     dlcIntro:'您毋须畏惧黑暗，灰烬大人。\n' +
-                //         '赢得具指标性的Golden Joystick Awards 2016 Game of the year RPG──DARK SOULS III，即将迎来最后一个DLC包。\n' +
-                //         'DARK SOULS III的最后一段旅程──环印城，前往探索末世所在，发掘新区域、新头目、新装备、法术，以及道具。\n' +
-                //         '是新世界，也是最终章──尽情体验仅有宫崎英高先生才能创造出的史诗最终篇章。',
-                //     dlcPublishDate:'2017年3月28日',
-                //     dlcPrice:'78.00',
-                //     dlcDiscount:100,
-                // },
-            ],
+            dlcList:[],
             gameFeatures:[],
             minimumConfiguration:[],
             recommendedConfiguration:[],
@@ -266,15 +247,15 @@ export default {
                     {
                         console.log('get   ' + res.data.about_game[i].poster)
                         console.log('get   ' + res.data.about_game[i].content)
-                        var path = res.data.about_game[i].poster + '.gif'
+                        // var path = res.data.about_game[i].poster + '.gif'
                         self.aboutGame.push({
-                            poster: path,
+                            poster:'0000000006/Cover/cover.gif',
                             content: res.data.about_game[i].content,
                         }) ;
                     }
                     for(i in res.data.dlc_list)
                     {
-                        console.log('get   ' + res.data.dlc_list[i])
+                        console.log('get  dlc  ' + res.data.dlc_list[i])
                         self.dlcList.push(res.data.dlc_list[i]) ;
                     }
                 }).catch( err => {
@@ -314,7 +295,6 @@ export default {
                             dlcDiscount:res.data.discount,
                         }
                     )
-
                 }).catch( err => {
                     console.log(err);
                 })
@@ -344,9 +324,9 @@ export default {
                     {
                         console.log('get   ' + res.data.about_game[i].poster)
                         console.log('get   ' + res.data.about_game[i].content)
-                        var path = res.data.about_game[i].poster + '.gif'
+                        // var path = res.data.about_game[i].poster + '.gif'
                         self.dlcIntro.push({
-                            poster:path,
+                            poster:'0000000006/Cover/cover.gif',
                             content: res.data.about_game[i].content,
                         }) ;
                         break;
@@ -367,7 +347,15 @@ export default {
             // }
             this.getGameInfo('0000000006');
             this.getAboutInfo('0000000006');
+            this.getGameInfo('0000000006');
+            this.getAboutInfo('0000000006');
+            this.getGameInfo('0000000006');
+            this.getAboutInfo('0000000006');
         },
+        lauchInit:function (){
+            this.launchedIntro = true;
+            this.launchedDLC = true;
+        }
     }
 }
 </script>
@@ -420,6 +408,7 @@ a{
     font-weight: normal;
     margin-bottom: 10px;
     margin-top: 20px;
+    font-size: 20px;
 }
 .m-evaluation{
     width:703px;
@@ -428,7 +417,7 @@ a{
     background-color: #fff;
     overflow: hidden;
     position: relative;
-    border: black 2px solid;
+    /*border: black 2px solid;*/
 }
 .m-introduction{
     width:703px;
@@ -437,7 +426,7 @@ a{
     background-color: #fff;
     overflow: hidden;
     position: relative;
-    border: black 2px solid;
+    /*border: black 2px solid;*/
 }
 .m-introduction p{
     margin-top: 10px;
@@ -473,7 +462,7 @@ a{
     height: 272px;
     background-color: #fff;
     margin-bottom: 20px;
-    border: black 2px solid;
+    /*border: black 2px solid;*/
 }
 .panel h2{
     padding-top: 20px;
@@ -533,52 +522,13 @@ a{
 .panel:nth-of-type(4) table tr td:first-of-type{
     color: gray;
 }
-/*.panel:last-of-type{*/
-/*    height: 200px;*/
-/*}*/
-/*.panel:last-of-type p{*/
-/*    margin-left: 20px;*/
-/*    margin-top: 20px;*/
-/*    color: gray;*/
-/*}*/
-/*.panel:last-of-type a{*/
-/*    margin-left: 20px;*/
-/*    display: block;*/
-/*    margin-top: 5px;*/
-/*    color: gray;*/
-/*}*/
-/*.panel:last-of-type p:last-of-type{*/
-/*    margin-top: 5px;*/
-/*}*/
-
-.m-content-left .u-tips{
-    margin-top: 20px;
-    border: 1px solid gray;
-    display: block;
-    width: 70px;
-    text-align: center;
-    height: 30px;
-    line-height: 30px;
-
-}
-
-.m-content-left .u-tips{
-    margin-top: 20px;
-    border: 1px solid gray;
-    display: block;
-    width: 70px;
-    text-align: center;
-    height: 30px;
-    line-height: 30px;
-
-}
 /*更新与活动*/
 .m-hot{
     width: 703px;
     height: 148px;
     background-color: #fff;
     margin-bottom: 20px;
-    border: black 1px solid;
+    /*border: black 1px solid;*/
 }
 .m-hot-left{
     height: 148px;
@@ -593,35 +543,18 @@ a{
 .m-hot-right{
     height: 148px;
     width: 505px;
-}
-.m-hot-right h4{
-    padding-top: 10px;
-    font-size: 14px;
-    float: left;
-}
-.m-hot-right span{
-    float: left;
-    margin-top: 25px;
-    color: gray;
-}
-.m-hot-right p:first-of-type{
-    margin-top: 10px;
-    width: 480px;
-    font-size: 12px;
-    float: left;
-    text-align: left;
+    border: black 1px solid;
 }
 
-.m-hot-right p:nth-of-type(2){
-    height: 20px;
-    margin-left: 10px;
-    margin-top: 10px;
-    float: left;
+.dlc-name{
+    font-size: 20px;
+    font-weight: bolder;
+    margin-bottom: 10px;
 }
 .dlc-content{
-    height: 110px;
-    border: #000000 1px solid;
+    height: 105px;
     white-space: pre-wrap;
+    margin-top: 10px;
 }
 .dlc-publish-time{
     height: 20px;
@@ -630,18 +563,20 @@ a{
     display: block;
     margin-top: 10px;
     float: left;
-    border: #000000 1px solid;
+    font-size: 14px;
 }
 .dlc-add{
-    border: #000000 1px solid;
+    /*border: #000000 1px solid;*/
     width: 200px;
     height: 20px;
     float: right;
     margin-top: 10px;
     margin-right: 10px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 20px;
     color: white;
     font-size: 14px;
-    text-align: center;
     font-weight: 600;
     background-color: #3B9CFF;
 }

@@ -1,13 +1,13 @@
 <template>
     <div class="m-recommended clearbox">
         <ul style="margin: auto;width: 1000px;">
-            <li v-for="(game,index) in gameList" :key="index">
+            <li v-for="(game,index) in gameList.length" :key="index">
                 <div class="m-game-rec fl">
                     <div style="height: 125px;overflow: hidden">
-                        <img :src="require('../assets/imgs/' + game.coverPath)">
+                        <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
                     </div>
-                    <p class="game-name"> {{game.gameName}}</p>
-                    <p class="game-price"> {{ game.price * (1-game.discount)/100 }}</p>
+                    <p class="game-name"> {{ gameInfo[index].gameName}}</p>
+                    <p class="game-price"> {{  gameInfo[index].price * (gameInfo[index].discount)/100 }}￥</p>
                 </div>
             </li>
         </ul>
@@ -19,40 +19,14 @@ export default {
     name: "GameRecommended",
     data(){
         return{
-            gameList:[
-                {
-                    gid:'',
-                    coverPath:"ring.jpg",
-                    gameName:'ring',
-                    price:0,
-                    discount:100,
-                },
-                {
-                    gid:'',
-                    coverPath:"ring.jpg",
-                    gameName:'ring',
-                    price:0,
-                    discount:100,
-                },
-                {
-                    gid:'',
-                    coverPath:"ring.jpg",
-                    gameName:'ring',
-                    price:0,
-                    discount:100,
-                },
-                {
-                    gid:'',
-                    coverPath:"ring.jpg",
-                    gameName:'ring',
-                    price:0,
-                    discount:100,
-                }
-            ]
+            gameList:[],
+            gameInfo:[],
+            gameIntro:[],
         }
     },
     mounted() {
-        this.getData('0000000006')
+        this.getData('0000000002');
+        setTimeout(this.fun,300)
     },
     methods:{
         getData:function(gid){
@@ -64,25 +38,32 @@ export default {
 
             this.$axios.post('api/gamedetail/getRecommendedGames', {
                 game_id: gid,
-                user_id: '0000000004'
+                user_id: '0000000012'
             }).then( res => {
                 switch(res.data.result){
                     case 1:
-                        console.log("GameCarousel 请求成功");
+                        console.log("推荐游戏 请求成功");
                         break;
                     default:
-                        console.log('GameCarousel 请求失败')
+                        console.log('推荐游戏 请求失败')
                         break;
                 }
                 for(let i in res.data.game_list)
                 {
                     console.log(res.data.game_list[i])
+                    this.gameList.push(
+                        {
+                            gid:'',
+                            coverPath:"ring.jpg",
+                            gameName:'ring',
+                            price:0,
+                            discount:100,
+                        },
+                    )
                 }
             }).catch( err => {
                 console.log(err);
             })
-
-
 
         },
         getGameInfo:function (gid){
@@ -95,25 +76,20 @@ export default {
                 }).then( res => {
                     switch(res.data.result){
                         case 1:
-                            console.log("GameCarousel 请求成功");
+                            console.log("GameCarousel -r 请求成功");
                             break;
                         default:
-                            console.log('GameCarousel 请求失败')
+                            console.log('GameCarousel -r 请求失败')
                             break;
                     }
-                    console.log(res.data.game_name)
-                    console.log(res.data.publish_date)
-                    console.log(res.data.price)
-                    console.log(res.data.discount)
-                    self.dlcInfo.push(
+                    self.gameInfo.push(
                         {
-                            dlcName:res.data.game_name,
-                            dlcPublishDate:res.data.publish_date,
-                            dlcPrice:res.data.price,
-                            dlcDiscount:res.data.discount,
+                            gameName:res.data.game_name,
+                            price:res.data.price,
+                            discount:res.data.discount,
                         }
                     )
-
+                    console.log(res.data.discount)
                 }).catch( err => {
                     console.log(err);
                 })
@@ -141,12 +117,10 @@ export default {
                     }
                     for(i in res.data.about_game)
                     {
-                        console.log('get   ' + res.data.about_game[i].poster)
-                        console.log('get   ' + res.data.about_game[i].content)
-                        var path = res.data.about_game[i].poster + '.gif'
-                        self.dlcIntro.push({
-                            poster:path,
-                            content: res.data.about_game[i].content,
+                        i;
+                        self.gameIntro.push({
+                            coverPath:'0000000006/Cover/cover.gif',
+                            intro:res.data.about_game[i].content
                         }) ;
                         break;
                     }
@@ -158,6 +132,13 @@ export default {
                 alert('游戏ID不能为空')
             }
         },
+        fun(){
+            for(let i = 0;i<this.gameList.length;i++)
+            {
+                this.getGameInfo('0000000006');
+                this.getAboutInfo('0000000006');
+            }
+        }
     }
 }
 </script>
@@ -191,7 +172,7 @@ a{
 .m-game-rec{
     height: 200px;
     width: 230px;
-    margin: 50px 10px;
+    margin: 10px 10px;
     border-radius: 10px;
     overflow: hidden;
     background-color: white;

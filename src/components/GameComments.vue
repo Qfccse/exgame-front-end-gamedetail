@@ -1,7 +1,74 @@
 <template>
     <div class="m-page clearbox">
+        <div class="comment-filter  clearbox">
+            <div class="fl">
+                <div class="filter-box" style="height: 80px" @click="click2Choose(1)">
+                    <div class="filter-title clearbox">
+                        测评结果
+                        <select  disabled class="filter-bar fr"></select>
+                    </div>
+                    <div>
+                        <div  v-if="filters[0].cur===0" style="margin-left: 10px;margin-top:5px;font-size: 20px;font-weight: bolder">
+                            全部
+                        </div>
+                        <div class="comment-rate" v-else>
+                            <div class="m-rate-left fl" style="margin-top: 8px">
+                                <div v-if="filters[0].cur===1" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
+                                    <img  src="../assets/imgs/emoji-laughing.svg" style="filter: drop-shadow(25px 0px orange)" height="25" alt="">
+                                </div>
+                                <div v-else >
+                                    <img src="../assets/imgs/emoji-frown.svg" height="25" alt="">
+                                </div>
+                            </div>
+                            <div class="m-rate-right fl" style="margin-top: 10px">
+                                <div class="rate-name" >
+                                    <span v-if="filters[0].cur===1" style="color: orange">推荐</span>
+                                    <span v-else>不推荐</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="s1"  class="select-bar" style="z-index: 999;position: absolute;display: none">
+                    <li id="s1l1" @click="filterChoose(1,1)">&nbsp;&nbsp;{{ filters[0].valueList[0] }}</li>
+                    <li id="s1l2" @click="filterChoose(1,2)">&nbsp;&nbsp;{{ filters[0].valueList[1] }}</li>
+                    <li id="s1l3" @click="filterChoose(1,3)">&nbsp;&nbsp;{{ filters[0].valueList[2] }}</li>
+                </ul>
+            </div>
+            <div class="fl">
+                <div>
+                    <div class="filter-box"  @click="click2Choose(2)">
+                        <div class="filter-title">
+                            获得方式
+                            <select  disabled  class="filter-bar fr"></select>
+                            <span class="fr">{{ filters[1].valueList[filters[1].cur] }}</span>
+                        </div>
+                    </div>
+                    <ul id="s2"   class="select-bar" style="z-index: 999;position: absolute;display: none">
+                        <li id="s2l1" @click="filterChoose(2,1)">&nbsp;&nbsp;{{ filters[1].valueList[0] }}</li>
+                        <li id="s2l2" @click="filterChoose(2,2)">&nbsp;&nbsp;{{ filters[1].valueList[1] }}</li>
+                        <li id="s2l3" @click="filterChoose(2,3)">&nbsp;&nbsp;{{ filters[1].valueList[2] }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="filter-box"  @click="click2Choose(3)">
+                        <div class="filter-title">
+                            时间
+                            <select  disabled  class="filter-bar fr"></select>
+                            <span class="fr">{{ filters[2].valueList[filters[2].cur] }}</span>
+                        </div>
+                    </div>
+                    <ul id="s3"  class="select-bar"  style="z-index: 999;position: absolute;display: none">
+                        <li id="s3l1" @click="filterChoose(3,1)">&nbsp;&nbsp;{{ filters[2].valueList[0] }}</li>
+                        <li id="s3l2" @click="filterChoose(3,2)">&nbsp;&nbsp;{{ filters[2].valueList[1] }}</li>
+                        <li id="s3l3" @click="filterChoose(3,3)">&nbsp;&nbsp;{{ filters[2].valueList[2] }}</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
         <div class="tab-bar clearbox">
-            <span class="comment-count fl">找到{{comments.length}}条测评</span>
+            <span class="comment-count fl">找到{{commentNum}}条测评</span>
             <ul class="comment-tab fr">
                 <li @click="tab(index)"  v-for="(item,index) in items"
                     :class="{active : index===curId}" :key="index" style="display: inline;margin-left: 20px">{{item.item}}
@@ -33,7 +100,7 @@
                         <div class="m-comment-right fr">
                             <div class="comment-rate">
                                 <div class="m-rate-left fl">
-                                    <div v-if="comment.detail.rate>3" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
+                                    <div v-if="comment.detail.rate>=3" style="text-indent: -25px;height: 25px;width: 25px;overflow: hidden">
                                         <img  src="../assets/imgs/emoji-laughing.svg" style="filter: drop-shadow(25px 0px orange)" height="25" alt="">
                                     </div>
                                     <div v-else >
@@ -47,8 +114,11 @@
                                     </div>
                                 </div>
                                 <div class="rate-count-time fr">
-                                    总时数 {{comment.user.gamedTime}}小时
-                                    <span v-if="comment.user.gamedTimeComment!==''">（测评时{{comment.user.gamedTimeComment}}小时）</span>
+                                    于 {{comment.user.accessTime}}日获得该游戏
+                                    （通过
+                                    <span v-if="comment.user.viaCDK===1">CKD</span>
+                                    <span v-else>购买</span>
+                                    获得）
                                 </div>
                                 <div class="line3 clearbox"></div>
                             </div>
@@ -79,7 +149,9 @@
                 </li>
             </ul>
         </div>
-
+        <div class="more-comments clearbox" @click="getMoreComments()" v-show="commentNum>0&&this.isEnd===false">
+            <span > 查看更多测评 <i class="icon-downarrow"></i></span>
+        </div>
     </div>
 </template>
 
@@ -88,187 +160,122 @@ export default {
     name: "GameComments",
     data(){
         return {
-            select:'全部',
+            filters:[
+                {
+                    cur:0,
+                    value:'测评结果',
+                    valueList:['全部','推荐','不推荐']
+                },
+                {
+                    cur:0,
+                    value:'获得方式',
+                    valueList:['全部','购买','其它']
+                },
+                {
+                    cur:0,
+                    value:'时间',
+                    valueList:['全部','最近一周','最近一个月']
+                },
+            ],
             curId: 0,
+            pgn:1,
+            isEnd:false,
             items: [
                 {item: '最有价值'},
                 {item: '最新发表'},
             ],
-            detailType:{
-                rate:{
-                    type: Number
-                },
-                date:{
-                    type: String
-                },
-                content:{
-                    type: String
-                },
-            },
-            mostValuedCommentsNum:4,
-            mostRecentCommentsNum:2,
+            commentNum:0,
             mostValuedComments:[],
             mostRecentComments:[],
-            userList:[],
             comments:[],
-            commentList:[
-                {
-                    //评论创建者，我认为可以用一个user_id代替，调用其他接口
-                    user:{
-                        //分别是 头像、user_id、昵称、游戏数目、测评数目、游戏时间、评论时的游戏时间
-                        head:'h1.jpg',
-                        name:'阿古斯之手',
-                        gameNum:168,
-                        commentNum:9,
-                        gamedTime:'196.1',
-                        gamedTimeComment:'181.5',
-                    },
-                    //评论详情
-                    detail:{
-                        //分别是 rate 1表示好评 2表示差评  、 comment_id 评论id 、评论日期 、 评论内容
-                        rate:1,
-                        date:'7.8',
-                        content:'忠告：一周目是你最宝贵的财富，得到宝藏的兴奋，鏖战boss的坚持，误入捷径的惊喜，不完美才会记得，不完整才有动力，不要让攻略指引你的脚步，不要让收集毁了你的体验。如果能许下一个愿望，我希望让我忘记这个游戏所有的记忆，带着初心再战一次。'
-                    },
-                    //评论的点评
-                    rate:{
-                        // 评论点赞数、点踩数、认为这篇评论很欢乐的数目
-                        goodCount:1952,
-                        badCount:0,
-                    },
-                    //我对评论的点评
-                    myChoice:{
-                        // 我对该评论的看法，点赞、点踩、认为很欢乐
-                        good:true,
-                        bad:false,
-                    }
-                },
-                {
-                    user:{
-                        head:'h2.jpg',
-                        name:'纯粹DUOLUO',
-                        gameNum:103,
-                        commentNum:7,
-                        gamedTime:'122.6',
-                        gamedTimeComment:'122.5',
-                    },
-                    detail:{
-                        rate:2,
-                        date:'7.23',
-                        content:'论一个好游戏被小蓝熊毁掉的故事还不够多吗？论论一个好游戏被戏被小蓝熊毁掉的故事还不够多吗？论论一个好游戏被戏被小蓝熊毁掉的故事还不够多吗？论论一个好游戏被戏被小蓝熊毁掉的故事还不够多吗？论论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？论一个好游戏被小蓝熊毁掉的故事还不够多吗？怎么2022年了还有运营用小蓝熊？我这个差评不是给宫崎也不是给埃尔登！而是给小蓝熊！以后只要有小蓝熊的游戏我都会给小蓝熊刷差评！小蓝熊差评从我做起！拒绝小蓝熊这个外挂软件！'
-                    },
-                    rate:{
-                        goodCount:40,
-                        badCount:0,
-                    },
-                    myChoice:{
-                        good:false,
-                        bad:false,
-                    }
-                },
-                {
-                    user:{
-                        head:'h4.jpg',
-                        name:'2572372856',
-                        gameNum:57,
-                        commentNum:5,
-                        gamedTime:'44.9',
-                        gamedTimeComment:'18.5',
-                    },
-                    detail:{
-                        rate:1,
-                        date:'8.6',
-                        content:'蛮好的',
-                    },
-                    rate:{
-                        goodCount:0,
-                        badCount:0,
-                    },
-                    myChoice:{
-                        good:true,
-                        bad:false,
-                    }
-                },
-                {
-                    user:{
-                        head:'h5.jpg',
-                        name:'obidou',
-                        gameNum:168,
-                        commentNum:9,
-                        gamedTime:'14.9',
-                        gamedTimeComment:'14.1',
-                    },
-                    detail:{
-                        rate:1,
-                        cid:'',
-                        date:'8.5',
-                        content:'卡满月女王怒删游戏 自以为玩了90多个小时拿下老头环一点问题都没有，谁知除了幽魂以外几乎谁都能一刀打我半血 我说我法师档脆皮正常，那sb女王还会摇人摇了个征战骑士一刀几乎满血秒了 我超我6口血瓶喝的机会都没有!玩魂3 1周目穿中甲盖尔老头投技都秒不了我 你一个前期boss几乎一下一个 反正我先弃了 宫崎老贼，你妈卖批',
-                    },
-                    rate:{
-                        goodCount:0,
-                        badCount:0,
-                    },
-                    myChoice:{
-                        good:false,
-                        bad:false,
-                    }
-                },
-                {
-                    user:{
-                        head:'h6.jpg',
-                        name:'Ash',
-                        gameNum:132,
-                        commentNum:1,
-                        gamedTime:'8.8',
-                        gamedTimeComment:'8.5',
-                    },
-                    detail:{
-                        rate:2,
-                        date:'8.5',
-                        content:'难度太高玩不下去',
-                    },
-                    rate:{
-                        goodCount:0,
-                        badCount:0,
-                    },
-                    myChoice:{
-                        good:false,
-                        bad:false,
-                    }
-                },
-                {
-                    user:{
-                        head:'h7.jpg',
-                        name:'伊蕾娜',
-                        gameNum:16,
-                        commentNum:1,
-                        gamedTime:'164.9',
-                        gamedTimeComment:'120.5',
-                    },
-                    detail:{
-                        rate:1,
-                        date:'8.5',
-                        content:'只要你喜欢这款游戏卖多少都不会觉的贵',
-                    },
-                    rate:{
-                        goodCount:0,
-                        badCount:0,
-                    },
-                    myChoice:{
-                        good:false,
-                        bad:false,
-                    }
-                },
-            ],
         }
-
     },
     mounted() {
-        this.getData('0000000006','0000000001');
-        this.init();
-        setTimeout(this.pic,100);
+        this.getData('0000000006','0000000001',1,1,0,0,0);
+        setTimeout(this.init,600);
+        setTimeout(this.pic,610);
     },
     methods:{
+        click2Choose(index){
+            var id = 's' + index.toString()
+            var ss  = document.getElementById(id)
+            if(ss.style.display === 'block')
+            {
+                ss.style.display = 'none'
+            }
+            else
+            {
+                ss.style.display = 'block';
+            }
+        },
+        filterChoose(i,ii){
+            for(let j = 0;j<this.filters[i-1].valueList.length;j++)
+            {
+                const temp = 's' + i.toString() + 'l' + (j + 1).toString();
+                let ft = document.getElementById(temp)
+                ft.style.backgroundColor = 'white'
+            }
+            const id = 's' + i.toString() + 'l' + ii.toString();
+            let fl = document.getElementById(id)
+            fl.style.backgroundColor = '#e9e9e9'
+            this.filters[i-1].cur  = ii-1;
+            this.click2Choose(i)
+            this.pgn =1;
+            this.getData('0000000006','0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+            setTimeout(this.init,600);
+            setTimeout(this.pic,610);
+            // this.comments = this.funFilter(this.comments,i,ii);
+        },
+        // funFilter:function (comment_list,bar,type){
+        //     if(type===1)
+        //     {
+        //         return comment_list;
+        //     }
+        //     var temp_list = [];
+        //     if(bar===1&&type===2)
+        //     {
+        //         for(let i=0;i<this.comments.length;i++)
+        //         {
+        //             if(this.comments[i].detail.rate>=3)
+        //             {
+        //                 temp_list.push(this.comments[i])
+        //             }
+        //         }
+        //
+        //     }
+        //     if(bar===1&&type===3)
+        //     {
+        //         for(let i=0;i<this.mostValuedComments.length;i++)
+        //         {
+        //             if(this.mostValuedComments[i].detail.rate<3)
+        //             {
+        //                 temp_list.push(this.mostValuedComments[i])
+        //             }
+        //         }
+        //     }
+        //     if(bar===2&&type===2)
+        //     {
+        //         for(let i=0;i<this.mostValuedComments.length;i++)
+        //         {
+        //             if(this.mostValuedComments[i].user.viaCDK===1)
+        //             {
+        //                 temp_list.push(this.mostValuedComments[i])
+        //             }
+        //         }
+        //     }
+        //     if(bar===2&&type===3)
+        //     {
+        //         for(let i=0;i<this.mostValuedComments.length;i++)
+        //         {
+        //             if(this.mostValuedComments[i].user.viaCDK===0)
+        //             {
+        //                 temp_list.push(this.mostValuedComments[i])
+        //             }
+        //         }
+        //     }
+        //
+        //     return temp_list;
+        // },
         tab (index) {
             if(index===0)
             {
@@ -278,42 +285,24 @@ export default {
                 this.comments = this.mostRecentComments;
             }
             console.log(this.curId.toString() + '+++++')
-
             this.curId = index;
-            this.pic();
+            this.pgn =1;
+            this.getData('0000000006','0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+            setTimeout(this.init,600);
+            setTimeout(this.pic,610);
+            // this.pic();
         },
-        getUserInfo:function (uid){
-            if(uid.length===0)
+        getMoreComments:function (){
+            // this.getData('0000000006','0000000008');
+            if(this.isEnd===false)
             {
-                alert('uid 不能为空')
-                return;
+                this.pgn++;
+                this.getData('0000000006','0000000001',this.pgn,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+                setTimeout(this.apd,1000);
+                setTimeout(this.pic,1010);
             }
-            this.$axios.post('api/user/getUserInfo', {
-                user_id:uid,
-            }).then( res => {
-                switch(res.data.result){
-                    case 1:
-                        console.log("GameComment 请求成功");
-                        break;
-                    default:
-                        console.log('GameComment 请求失败')
-                        break;
-                }
-                this.userList.push(
-                    {
-                        head:res.data.profile_photo,
-                        name:res.data.name,
-                        gameNum:res.data.game_num,
-                        commentNum:0,
-                        gamedTime:'000',
-                        gamedTimeComment:'000',
-                    }
-                )
-            }).catch( err => {
-                console.log(err);
-            })
         },
-        getData:function (gid,uid)
+        getData: function (gid,uid,pgn,type,f1,f2,f3)
         {
             if(gid.length===0)
             {
@@ -327,52 +316,86 @@ export default {
             }
             console.log('getData')
             var self = this;
+            self.mostValuedComments = [];
+            self.mostRecentComments = [];
             this.$axios.post('api/gamedetail/getGameComments', {
                 game_id: gid,
                 user_id:uid,
+                page_no:pgn,
+                comment_type:type,
+                filter_1:f1,
+                filter_2:f2,
+                filter_3:f3,
             }).then( res => {
-                switch(res.data.result){
-                    case 1:
-                        console.log("GameComment 请求成功");
-                        break;
-                    default:
-                        console.log('GameComment 请求失败')
-                        break;
-                }
-                for(let i in res.data.comment_list)
+                console.log('本次获取 ' + res.data.result.toString() +" 条评论")
+                self.commentNum = res.data.comment_num;
+                self.isEnd = res.data.is_end;
+                if(type===1)
                 {
-                    console.log(res.data.comment_list[i].creator_id)
-                    self.detailType = res.data.detail;
-                    res.data.toString()
-
-                    self.comments.push(
-                        {
-                            user:{
-                                head:'h1.jpg',
-                                name:'阿古斯之手',
-                                gameNum:168,
-                                commentNum:9,
-                                gamedTime:'196.1',
-                                gamedTimeComment:'181.5',
-                            },
-                            detail:{
-                                rate:res.data.detail.rate,
-                                date:res.data.detail.date,
-                                content:res.data.detail.content
-                            },
-                            rate:{
-                                goodCount:res.data.rate.good_count,
-                                badCount:res.data.rate.bad_count,
-                            },
-                            myChoice:{
-                                good:res.data.my_view.good,
-                                bad:res.data.my_view.bad,
+                    for(let i in res.data.comment_list)
+                    {
+                        console.log('comment -----' + res.data.comment_list[i].id)
+                        self.mostValuedComments.push(
+                            {
+                                user:{
+                                    head:"h1.jpg",
+                                    uid:res.data.comment_list[i].id,
+                                    name:res.data.comment_list[i].name,
+                                    gameNum:res.data.comment_list[i].game_num,
+                                    commentNum:res.data.comment_list[i].comment_num,
+                                    accessTime:res.data.comment_list[i].access_time,
+                                    viaCDK:res.data.comment_list[i].via_cdk,
+                                },
+                                detail:{
+                                    rate:res.data.comment_list[i].rate,
+                                    date:res.data.comment_list[i].date,
+                                    content:res.data.comment_list[i].content
+                                },
+                                rate:{
+                                    goodCount:res.data.comment_list[i].good_count,
+                                    badCount:res.data.comment_list[i].bad_count,
+                                },
+                                myChoice:{
+                                    good:res.data.comment_list[i].good,
+                                    bad:res.data.comment_list[i].bad,
+                                }
                             }
-
-                        }
-                    )
+                        )
+                    }
                 }
-
+                else
+                {
+                    for(let i in res.data.comment_list)
+                    {
+                        console.log('comment -----' + res.data.comment_list[i].id)
+                        self.mostRecentComments.push(
+                            {
+                                user:{
+                                    head:"h1.jpg",
+                                    uid:res.data.comment_list[i].id,
+                                    name:res.data.comment_list[i].name,
+                                    gameNum:res.data.comment_list[i].game_num,
+                                    commentNum:res.data.comment_list[i].comment_num,
+                                    accessTime:res.data.comment_list[i].access_time,
+                                    viaCDK:res.data.comment_list[i].via_cdk,
+                                },
+                                detail:{
+                                    rate:res.data.comment_list[i].rate,
+                                    date:res.data.comment_list[i].date,
+                                    content:res.data.comment_list[i].content
+                                },
+                                rate:{
+                                    goodCount:res.data.comment_list[i].good_count,
+                                    badCount:res.data.comment_list[i].bad_count,
+                                },
+                                myChoice:{
+                                    good:res.data.comment_list[i].good,
+                                    bad:res.data.comment_list[i].bad,
+                                }
+                            }
+                        )
+                    }
+                }
             }).catch( err => {
                 console.log(err);
             })
@@ -380,66 +403,85 @@ export default {
         init:function ()
         {
             console.log('init')
-            for(let i=0;i<this.mostValuedCommentsNum;i++)
-            {
-                this.mostValuedComments.push({
-                    user:{
-                        head:this.commentList[i].user.head,
-                        name:this.commentList[i].user.name,
-                        gameNum:this.commentList[i].user.gameNum,
-                        commentNum:this.commentList[i].user.commentNum,
-                        gamedTime:this.commentList[i].user.gamedTime,
-                        gamedTimeComment:this.commentList[i].user.gamedTimeComment,
-                    },
-                    detail:{
-                        rate:this.commentList[i].detail.rate,
-                        date:this.commentList[i].detail.date,
-                        content:this.commentList[i].detail.content,
-                    },
-                    rate:{
-                        goodCount:this.commentList[i].rate.goodCount,
-                        badCount:this.commentList[i].rate.badCount,
-                    },
-                    myChoice:{
-                        good:this.commentList[i].myChoice.good,
-                        bad:this.commentList[i].myChoice.bad,
-                    }
-                })
+            if(this.curId===0){
+                this.comments = this.mostValuedComments;
             }
-            for(let i=this.mostValuedCommentsNum; i<this.commentList.length; i++)
-            {
-                this.mostRecentComments.push({
-                    user:{
-                        head:this.commentList[i].user.head,
-                        name:this.commentList[i].user.name,
-                        gameNum:this.commentList[i].user.gameNum,
-                        commentNum:this.commentList[i].user.commentNum,
-                        gamedTime:this.commentList[i].user.gamedTime,
-                        gamedTimeComment:this.commentList[i].user.gamedTimeComment,
-                    },
-                    detail:{
-                        rate:this.commentList[i].detail.rate,
-                        date:this.commentList[i].detail.date,
-                        content:this.commentList[i].detail.content,
-                    },
-                    rate:{
-                        goodCount:this.commentList[i].rate.goodCount,
-                        badCount:this.commentList[i].rate.badCount,
-                    },
-                    myChoice:{
-                        good:this.commentList[i].myChoice.good,
-                        bad:this.commentList[i].myChoice.bad,
-                    }
-                })
+            else{
+                this.comments = this.mostRecentComments;
             }
-            this.comments = this.mostValuedComments;
+        },
+        apd:function ()
+        {
+            console.log(this.mostValuedComments.length.toString() + '---------')
+            if(this.curId===0)
+            {
+                for(let i=0;i<this.mostValuedComments.length;i++)
+                {
+                    console.log('apd')
+                    this.comments.push({
+                        user:{
+                            head:this.mostValuedComments[i].user.head,
+                            uid:this.mostValuedComments[i].user.uid,
+                            name:this.mostValuedComments[i].user.name,
+                            gameNum:this.mostValuedComments[i].user.gameNum,
+                            commentNum:this.mostValuedComments[i].user.commentNum,
+                            accessTime:this.mostValuedComments[i].user.accessTime,
+                            viaCDK:this.mostValuedComments[i].user.viaCDK,
+                        },
+                        detail:{
+                            rate:this.mostValuedComments[i].detail.rate,
+                            date:this.mostValuedComments[i].detail.date,
+                            content:this.mostValuedComments[i].detail.content,
+                        },
+                        rate:{
+                            goodCount:this.mostValuedComments[i].rate.goodCount,
+                            badCount:this.mostValuedComments[i].rate.badCount,
+                        },
+                        myChoice:{
+                            good:this.mostValuedComments[i].myChoice.good,
+                            bad:this.mostValuedComments[i].myChoice.bad,
+                        }
+                    })
+                }
+            }
+            else
+            {
+                for(let i=0;i<this.mostRecentComments.length;i++)
+                {
+                    console.log('apd')
+                    this.comments.push({
+                        user:{
+                            head:this.mostRecentComments[i].user.head,
+                            uid:this.mostRecentComments[i].user.uid,
+                            name:this.mostRecentComments[i].user.name,
+                            gameNum:this.mostRecentComments[i].user.gameNum,
+                            commentNum:this.mostRecentComments[i].user.commentNum,
+                            accessTime:this.mostRecentComments[i].user.accessTime,
+                            viaCDK:this.mostRecentComments[i].user.viaCDK,
+                        },
+                        detail:{
+                            rate:this.mostRecentComments[i].detail.rate,
+                            date:this.mostRecentComments[i].detail.date,
+                            content:this.mostRecentComments[i].detail.content,
+                        },
+                        rate:{
+                            goodCount:this.mostRecentComments[i].rate.goodCount,
+                            badCount:this.mostRecentComments[i].rate.badCount,
+                        },
+                        myChoice:{
+                            good:this.mostRecentComments[i].myChoice.good,
+                            bad:this.mostRecentComments[i].myChoice.bad,
+                        }
+                    })
+                }
+            }
         },
         pic:function ()
         {
             for(let i=0; i<this.comments.length; i++)
             {
-               // console.log(this.comments[i].myChoice.good)
-               // console.log(this.comments[i].myChoice.bad)
+                // console.log(this.comments[i].myChoice.good)
+                // console.log(this.comments[i].myChoice.bad)
                 var pos = this.curId === 0?1:2;
                 if(this.comments[i].myChoice.good===true&&this.comments[i].myChoice.bad===true)
                 {
@@ -464,6 +506,25 @@ export default {
                 console.log('comment' + (i+1).toString() + '渲染完毕')
             }
         },
+        sendRate:function (gid,uid,cid,cv){
+            if(gid===null||uid===null||cid===null||cv===0)
+            {
+                alert('id 不能为空')
+                return;
+            }
+            console.log('发送' + cid)
+            // var self = this;
+            this.$axios.post('api/gamedetail/postUserCommentView', {
+                game_id: '0000000006',
+                user_id:uid,
+                creator_id:cid,
+                comment_view:cv,
+            }).then( res => {
+                console.log('add rate' + res.data.result.toString() + res.data.response)
+            }).catch( err => {
+                console.log(err);
+            })
+        },
         getID:function (index,pre){
             // console.log(pre + index.toString())
             return pre + index.toString();
@@ -476,11 +537,12 @@ export default {
             // alert('需要检测是否登录')
             console.log('选择' + (pos===1?'左侧':'右侧') + ' 第' + index.toString() + '条评论 第 ' + type.toString()+  '个按钮')
             let comment = pos===1?this.mostValuedComments:this.mostRecentComments;
-
             if(type===1)
             {
+                //点赞
                 if(comment[index].myChoice.good===false)
                 {
+                    //之前没有点赞但是点了踩
                     if(comment[index].myChoice.bad===true)
                     {
                         comment[index].myChoice.bad = false;
@@ -492,10 +554,12 @@ export default {
                     comment[index].rate.goodCount++;
                 }
                 else{
+                    //取消点赞
                     comment[index].myChoice.good=false;
                     document.getElementById(this.getRateID(index+1,'rate-ico-1-',pos)).style.backgroundColor ='transparent';
                     comment[index].rate.goodCount--;
                 }
+                this.sendRate('0000000006','0000000008',comment[index].user.uid,1)
             }
             else if(type===2)
             {
@@ -516,6 +580,7 @@ export default {
                     document.getElementById(this.getRateID(index+1,'rate-ico-2-',pos)).style.backgroundColor = 'transparent';
                     comment[index].rate.badCount--;
                 }
+                this.sendRate('0000000006','0000000008',comment[index].user.uid,-1)
             }
             else{
                 console.log('rate not found err')
@@ -554,6 +619,64 @@ a{
     overflow:hidden;
     background-color: white;
 }
+
+.comment-filter{
+    margin: 50px auto;
+    width: 1000px;
+    height: 110px;
+    border-bottom: #aaaaaa 1px solid;
+}
+.filter-box{
+    border: #aaaaaa 1px solid;
+    width: 310px;
+    border-radius: 5px;
+    align-items: center;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+.filter-title{
+    height: 35px;
+    line-height: 35px;
+    margin-left: 10px;
+    width: 290px;
+}
+.filter-bar{
+    height: 35px;
+    border:none;
+    margin-left: 10px;
+    box-shadow:none;
+    outline: none;
+}
+.select-bar{
+    border: #aaaaaa 1px solid;
+    width: 310px;
+    border-radius: 8px;
+    align-items: center;
+    font-size: 14px;
+    margin-left: 10px;
+    background-color: white;
+    box-shadow: darkgrey 1px 1px 1px 1px;
+}
+.select-bar li{
+    height: 30px;
+    font-size: 12px;
+    line-height:30px;
+    color:#666666;
+}
+#s1l1:hover,
+#s1l2:hover,
+#s1l3:hover,
+#s2l1:hover,
+#s2l2:hover,
+#s2l3:hover,
+#s3l1:hover,
+#s3l2:hover,
+#s3l3:hover{
+    background-color: #e9e9e9;
+}
+
 .tab-bar {
     margin-top: 50px;
     color:#666666;
@@ -579,6 +702,7 @@ a{
     font-size: 12px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 30px;
 }
 .comment-tip2{
     text-align: center;
@@ -606,7 +730,7 @@ a{
     margin-left: 25px;
     background-color: #fff;
     background-image: linear-gradient(#333333, #666666);
-    margin-top: 20px;
+    margin-bottom: 20px;
     border-radius:15px;
 }
 .comment-creator{
@@ -793,5 +917,28 @@ a{
     margin-top: 10px;
     margin-left: 20px;
 }
-
+.more-comments{
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bolder;
+    color: #666666;
+    background-color: rgb(240, 240, 240 , 50%);
+    border-radius: 5px;
+    width: 1000px;
+    margin: auto auto 50px auto;
+}
+.more-comments:hover{
+    background-color: rgb(240, 240, 240 );
+}
+.icon-downarrow{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    border-left:2px solid black;
+    border-bottom:2px solid black;
+    transform:rotate(-45deg);
+    margin:0 0 4px 6px;
+}
 </style>

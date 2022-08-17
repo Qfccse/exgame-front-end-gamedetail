@@ -61,7 +61,7 @@
 
 <script>
 export default {
-    name: "TEST",
+    name: "GameCarousel",
     props:['game_id'],
     data() {
         return {
