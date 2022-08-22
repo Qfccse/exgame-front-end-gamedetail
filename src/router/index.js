@@ -1,31 +1,28 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import loginRegister from '../views/LoginRegister.vue'
 import GameDetail from "../views/GameDetail.vue";
+import ShoppingCart from "@/views/ShoppingCart";
 import TEST from "@/views/TEST";
-import GameCarousel from "@/components/GameCarousel";
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path:'/.',
-    name:'login',
-    component: loginRegister
+    path: '/detail:game_id',
+    name: 'GameDetail',
+    component: GameDetail,
+    props: true,
+  },
+  {
+    path: '/cart/id=?:user_id',
+    name: 'ShoppingCart',
+    component: ShoppingCart,
+    props: true,
   },
   {
     path: '/',
-    name: 'GameDetail',
-    component: GameDetail
-  },
-  {
-    path: '/.',
-    name: 'Carouesel',
-    component: GameCarousel,
-  },
-  {
-    path: '/.',
     name: 'TEST',
-    component: TEST
+    component: TEST,
+    props: true,
   },
 ]
 

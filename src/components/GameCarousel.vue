@@ -17,7 +17,7 @@
                             <li v-for="(temp,index) in showNum" :key="index">
                                 <!--                                <span>{{this.mediaMap[index].coverPath}}</span>-->
                                 <img class="media-list" v-if="launched===false" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/Game/0000000006/Exhibition/Photo/' +'logo.png')" width="103" height="60" @click="click2Choose(index)">
-                                <img class="media-list" v-if="launched===true" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/Game/' + mediaMap[index].coverPath)" width="103" height="60" @click="click2Choose(index)">
+                                <img class="media-list" v-if="launched===true" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/' + mediaMap[index].coverPath)" width="103" height="60" @click="click2Choose(index)">
                                 <img class="play-button" v-if="mediaMap[index].srcType===1" :id="getID(index-1,'pbutton-')" src="../assets/play-button.jpg" width="20" height="20" @click="click2Choose(index)" >
                             </li>
                         </ul>
@@ -51,7 +51,9 @@
                         </ul>
 
                     </div>
-                    <a href="#">加入购物车 ￥{{price*(100-discount)/100}}<span v-if="discount!==0" style="color: red">  {{ discount }}%off</span></a>
+                    <router-link :to="{name:'ShoppingCart',params:{user_id:this.game_id}}">
+                        <a href="#">加入购物车 ￥{{price*(100-discount)/100}}<span v-if="discount!==0" style="color: red">  {{ discount }}%off</span></a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -62,10 +64,10 @@
 <script>
 export default {
     name: "GameCarousel",
-    props:['game_id','time_out'],
+    props:['game_id'],
     data() {
         return {
-            basic_source_path:"../../../ExGame-Asset/Game/",
+            basic_source_path:"../../../ExGame-Asset/",
             showNum: 6,
             launched:false,
             onPlay: 0,
@@ -119,6 +121,7 @@ export default {
         }
     },
     mounted() {
+        console.log('+++++++++++++' + this.game_id)
         this.getInfo(this.game_id);
         // 用设置延时的方法解决异步
         setTimeout(this.fun,400)

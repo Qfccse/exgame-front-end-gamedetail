@@ -2,13 +2,15 @@
     <div class="m-recommended clearbox">
         <div class="m-tt fl">推荐</div>
         <ul style="margin: auto;width: 1000px;" class="clearbox">
-            <li v-for="(game,index) in gameList.length" :key="index">
+            <li v-for="(game,index) in gameList" :key="index">
                 <div class="m-game-rec fl">
-                    <div style="height: 125px;overflow: hidden">
-                        <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
-                    </div>
-                    <p class="game-name"> {{ gameInfo[index].gameName}}</p>
-                    <p class="game-price"> {{  gameInfo[index].price * (gameInfo[index].discount)/100 }}￥</p>
+                    <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
+                        <div style="height: 125px;overflow: hidden">
+                            <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
+                        </div>
+                        <p class="game-name"> {{ gameInfo[index].gameName}}</p>
+                        <p class="game-price">￥{{  gameInfo[index].price * (gameInfo[index].discount)/100 }}</p>
+                    </router-link>
                 </div>
             </li>
         </ul>
@@ -18,7 +20,7 @@
 <script>
 export default {
     name: "GameRecommended",
-    props:['game_id','user_id','time_out'],
+    props:['game_id'],
     data(){
         return{
             gameList:[],
@@ -137,8 +139,8 @@ export default {
         fun(){
             for(let i = 0;i<this.gameList.length;i++)
             {
-                this.getGameInfo('0000000006');
-                this.getAboutInfo('0000000006');
+                this.getGameInfo(this.game_id);
+                this.getAboutInfo(this.game_id);
             }
         }
     }
@@ -203,11 +205,13 @@ a{
     margin-top: 15px;
     font-weight: bolder;
     font-size: 20px;
+    text-align: left;
 }
 .game-price{
     margin-left: 20px;
     font-size: 14px;
     margin-top: 10px;
     color:#666666;
+    text-align: left;
 }
 </style>

@@ -17,7 +17,9 @@
                 <li v-for="(dlc,index) in 3" :key="index">
                     <div class="m-hot clearbox">
                         <div class="m-hot-left fl">
-                            <a href="#"><img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128"></a>
+                            <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
+                                <img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128">
+                            </router-link>
                         </div>
                         <div class="m-hot-right fr">
                             <div class="dlc-content">
@@ -26,7 +28,9 @@
                             </div>
                             <div>
                                 <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
-                                <a class="dlc-add" href="#">加入购物车 ￥{{ dlcInfo[index].dlcPrice * (100- dlcInfo[index].discount)/100 }}</a>
+                                <router-link :to="{name:'ShoppingCart',params:{user_id:'000000001'}}">
+                                    <div class="dlc-add">加入购物车 ￥{{ dlcInfo[index].dlcPrice * dlcInfo[index].dlcDiscount/100}}</div>
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -37,7 +41,6 @@
                 <ul>
                     <li v-for="(intro,index) in aboutGame" :key="index">
                         <a href="#">
-<!--                            <img class="game-poster" v-if="launchedIntro==false"  :src="require('../../../ExGame-Asset/Game/0000000006/Cover/cover.gif')"  alt="">-->
                             <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
                         </a>
                         <div class="about-content">{{intro.content}}</div>
@@ -150,7 +153,7 @@
 <script>
 export default {
     name: "GameInfo",
-    props:['gid','time_out'],
+    props:['game_id'],
     data() {
         return {
             launchedIntro:false,
@@ -172,8 +175,8 @@ export default {
     },
     methods:{
         fun(){
-            this.getConfigData('0000000006');
-            this.getAboutData('0000000006');
+            this.getConfigData(this.game_id);
+            this.getAboutData(this.game_id);
             this.getDLC();
         },
         getConfigData:function (gid){
@@ -253,7 +256,7 @@ export default {
                         console.log('get   ' + res.data.about_game[i].content)
                         // var path = res.data.about_game[i].poster + '.gif'
                         self.aboutGame.push({
-                            poster:'0000000006/Cover/cover.gif',
+                            poster:this.game_id + '/Cover/cover.gif',
                             content: res.data.about_game[i].content,
                         }) ;
                     }
@@ -330,7 +333,7 @@ export default {
                         console.log('get   ' + res.data.about_game[i].content)
                         // var path = res.data.about_game[i].poster + '.gif'
                         self.dlcIntro.push({
-                            poster:'0000000006/Cover/cover.gif',
+                            poster:this.game_id + '/Cover/cover.gif',
                             content: res.data.about_game[i].content,
                         }) ;
                         break;
@@ -349,12 +352,12 @@ export default {
             //     console.log(this.dlcList[i]);
             //     this.getGameInfo(this.dlcList[i])
             // }
-            this.getGameInfo('0000000006');
-            this.getAboutInfo('0000000006');
-            this.getGameInfo('0000000006');
-            this.getAboutInfo('0000000006');
-            this.getGameInfo('0000000006');
-            this.getAboutInfo('0000000006');
+            this.getGameInfo(this.game_id);
+            this.getAboutInfo(this.game_id);
+            this.getGameInfo(this.game_id);
+            this.getAboutInfo(this.game_id);
+            this.getGameInfo(this.game_id);
+            this.getAboutInfo(this.game_id);
         },
     }
 }
@@ -568,17 +571,17 @@ a{
 }
 .dlc-add{
     /*border: #000000 1px solid;*/
-    width: 200px;
+    width: 180px;
     height: 20px;
     float: right;
     margin-top: 10px;
     margin-right: 10px;
-    vertical-align: middle;
     text-align: center;
     line-height: 20px;
     color: white;
     font-size: 14px;
     font-weight: 600;
+    border-radius: 5px;
     background-color: #3B9CFF;
 }
 </style>

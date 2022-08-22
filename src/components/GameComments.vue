@@ -161,7 +161,7 @@
 <script>
 export default {
     name: "GameComments",
-    props:['game_id','user_id','time_out'],
+    props:['game_id'],
     data(){
         return {
             filters:[
@@ -195,7 +195,7 @@ export default {
         }
     },
     mounted() {
-        this.getData('0000000006','0000000001',1,1,0,0,0);
+        this.getData(this.game_id,'0000000001',1,1,0,0,0);
         setTimeout(this.init,600);
         setTimeout(this.pic,610);
     },
@@ -225,7 +225,7 @@ export default {
             this.filters[i-1].cur  = ii-1;
             this.click2Choose(i)
             this.pgn =1;
-            this.getData('0000000006','0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+            this.getData(this.game_id,'0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
             setTimeout(this.init,600);
             setTimeout(this.pic,610);
             // this.comments = this.funFilter(this.comments,i,ii);
@@ -241,7 +241,7 @@ export default {
             console.log(this.curId.toString() + '+++++')
             this.curId = index;
             this.pgn =1;
-            this.getData('0000000006','0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+            this.getData(this.game_id,'0000000001',1,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
             setTimeout(this.init,600);
             setTimeout(this.pic,610);
             // this.pic();
@@ -251,7 +251,7 @@ export default {
             if(this.isEnd===false)
             {
                 this.pgn++;
-                this.getData('0000000006','0000000001',this.pgn,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
+                this.getData(this.game_id,'0000000001',this.pgn,this.curId+1,this.filters[0].cur,this.filters[1].cur,this.filters[2].cur);
                 setTimeout(this.apd,1000);
                 setTimeout(this.pic,1010);
             }
@@ -469,7 +469,7 @@ export default {
             console.log('发送' + cid)
             // var self = this;
             this.$axios.post('api/gamedetail/postUserCommentView', {
-                game_id: '0000000006',
+                game_id: gid,
                 user_id:uid,
                 creator_id:cid,
                 comment_view:cv,
@@ -513,7 +513,7 @@ export default {
                     document.getElementById(this.getRateID(index+1,'rate-ico-1-',pos)).style.backgroundColor ='transparent';
                     comment[index].rate.goodCount--;
                 }
-                this.sendRate('0000000006','0000000008',comment[index].user.uid,1)
+                this.sendRate(this.game_id,'0000000008',comment[index].user.uid,1)
             }
             else if(type===2)
             {
@@ -534,7 +534,7 @@ export default {
                     document.getElementById(this.getRateID(index+1,'rate-ico-2-',pos)).style.backgroundColor = 'transparent';
                     comment[index].rate.badCount--;
                 }
-                this.sendRate('0000000006','0000000008',comment[index].user.uid,-1)
+                this.sendRate(this.game_id,'0000000008',comment[index].user.uid,-1)
             }
             else{
                 console.log('rate not found err')

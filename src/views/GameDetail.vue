@@ -1,9 +1,9 @@
 <!--张宇 1952168-->
 <template>
     <div class="canvas">
-        <GameCarousel game_id="0000000006"></GameCarousel>
+        <GameCarousel :game_id="this.game_id"></GameCarousel>
         <GameInfo :game_id="this.game_id"></GameInfo>
-        <GameRecommended></GameRecommended>
+        <GameRecommended :game_id="this.game_id"></GameRecommended>
         <GameComments :game_id="this.game_id" :user_id="this.user_id"></GameComments>
     </div>
 </template>
@@ -15,7 +15,7 @@ import GameRecommended from "@/components/GameRecommended";
 import GameComments from "@/components/GameComments";
 export default {
     name: "GameDetail",
-    props:['game_id','user_id'],
+    props:['game_id'],
     components: {
         GameCarousel,
         GameInfo,
