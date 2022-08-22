@@ -13,7 +13,8 @@ const routes = [
     props: true,
   },
   {
-    path: '/cart/id=?:user_id',
+    // path: '/cart/id=?:user_id',
+    path: '/cart:user_id',
     name: 'ShoppingCart',
     component: ShoppingCart,
     props: true,

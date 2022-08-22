@@ -53,7 +53,7 @@
                             </ul>
                         </div>
                         <router-link :to="{name:'ShoppingCart',params:{user_id:this.game_id}}">
-                            <a href="#">
+                            <a href="#" @click="click2Add()">
                                 加入购物车
                                 <span v-if="discount!==100" style="text-decoration: line-through;color: #aaaaaa">￥{{price}}</span>
                                 <span>&nbsp;￥{{price*discount/100}}</span>
@@ -179,6 +179,26 @@ export default {
                 alert('游戏明不能为空')
             }
         },
+        add2Cart:function (gid,op){
+            if(gid===null)
+            {
+                alert('id 不能为空')
+                return;
+            }
+            // var self = this;
+            this.$axios.post('api/shopingcart/modifyUserShoppingCart', {
+                user_id:'0000000001',
+                game_id:gid,
+                op_type:op
+            }).then( res => {
+                console.log('modify cart' + res.data.result)
+            }).catch( err => {
+                console.log(err);
+            })
+        },
+        click2Add:function (){
+          this.add2Cart('0000000003',1)
+        },
         init:function (){
             var that = this;
             var cut = this.videoList.length;
@@ -266,9 +286,9 @@ export default {
             console.log('-pos ' + this.anchorPos.toString())
             console.log('type' + this.mediaMap[this.anchorPos].srcType.toString())
             if(this.mediaMap[this.anchorPos].srcType===1)
-                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/Game/' + this.getSourcePath(this.onPlay,this.mediaMap[this.anchorPos].srcType));
+                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay,this.mediaMap[this.anchorPos].srcType));
             else
-                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/Game/' + this.getSourcePath(this.onPlay,this.mediaMap[this.anchorPos].srcType));
+                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay,this.mediaMap[this.anchorPos].srcType));
             this.onPlay--;
             document.getElementById(this.getID(this.onPlay + 1  - this.mediaStart ,'mask-')).style.border = '0px'
             document.getElementById(this.getID(this.onPlay  - this.mediaStart  ,'mask-')).style.border ='3px solid #eee'
@@ -296,9 +316,9 @@ export default {
             console.log('+pos ' + this.anchorPos.toString())
             console.log('type' + this.mediaMap[this.anchorPos].srcType.toString())
             if(this.mediaMap[this.anchorPos].srcType===1)
-                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/Game/'+ this.getSourcePath(this.onPlay + 2,this.mediaMap[this.anchorPos].srcType));
+                this.$refs["main-player-1"].src = require('../../../ExGame-Asset/'+ this.getSourcePath(this.onPlay + 2,this.mediaMap[this.anchorPos].srcType));
             else
-                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/Game/' + this.getSourcePath(this.onPlay + 2,this.mediaMap[this.anchorPos].srcType));
+                this.$refs["main-player-2"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay + 2,this.mediaMap[this.anchorPos].srcType));
             console.log('----------')
             this.onPlay++;
             document.getElementById(this.getID(this.onPlay -1 - this.mediaStart ,'mask-')).style.border = '0px'

@@ -127,7 +127,7 @@
                                 <div>
                                     <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
                                     <router-link :to="{name:'ShoppingCart',params:{user_id:'000000001'}}">
-                                        <div class="dlc-add">加入购物车
+                                        <div class="dlc-add" @click="click2Cart()">加入购物车
                                             <span v-if="dlcInfo[index].dlcDiscount!==100" style="text-decoration: line-through;color: #aaaaaa">￥{{ dlcInfo[index].dlcPrice}}</span>
                                             <span>&nbsp;￥{{ dlcInfo[index].dlcPrice * dlcInfo[index].dlcDiscount/100}}</span>
                                         </div>
@@ -182,6 +182,27 @@ export default {
             this.getConfigData(this.game_id);
             this.getAboutData(this.game_id);
             this.getDLC();
+        },
+        add2Cart:function (gid,op){
+            if(gid===null)
+            {
+                alert('id 不能为空')
+                return;
+            }
+            // var self = this;
+            this.$axios.post('api/shopingcart/modifyUserShoppingCart', {
+                user_id:'0000000001',
+                game_id:gid,
+                op_type:op
+            }).then( res => {
+                console.log('modify cart' + res.data.result)
+            }).catch( err => {
+                console.log(err);
+            })
+        },
+        click2Cart(){
+            console.log('++++++++++++++++++++++++++++++++')
+            this.add2Cart('0000000003',1)
         },
         getConfigData:function (gid){
             var self = this;
