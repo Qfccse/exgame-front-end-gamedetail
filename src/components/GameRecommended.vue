@@ -1,19 +1,22 @@
 <template>
+    <div style="width: 1055px;height:280px;margin: auto;border-radius: 10px;background-color: #e0e0e0" class="clearbox">
     <div class="m-recommended clearbox">
-        <div class="m-tt fl">推荐</div>
-        <ul style="margin: auto;width: 1000px;" class="clearbox">
-            <li v-for="(game,index) in gameList" :key="index">
-                <div class="m-game-rec fl">
-                    <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
-                        <div style="height: 125px;overflow: hidden">
-                            <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
-                        </div>
-                        <p class="game-name"> {{ gameInfo[index].gameName}}</p>
-                        <p class="game-price">￥{{  gameInfo[index].price * (gameInfo[index].discount)/100 }}</p>
-                    </router-link>
-                </div>
-            </li>
-        </ul>
+
+            <div class="m-tt fl">推荐</div>
+            <ul style="margin: auto;width: 1000px;" class="clearbox">
+                <li v-for="(game,index) in gameList" :key="index">
+                    <div class="m-game-rec fl">
+                        <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
+                            <div style="height: 125px;overflow: hidden">
+                                <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
+                            </div>
+                            <p class="game-name"> {{ gameInfo[index].gameName}}</p>
+                            <p class="game-price">￥{{  gameInfo[index].price * (gameInfo[index].discount)/100 }}</p>
+                        </router-link>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -174,6 +177,7 @@ a{
     margin-bottom: 10px;
     margin-top: 20px;
     font-size: 20px;
+    /*color: #eeeeee;*/
 }
 
 .m-recommended{

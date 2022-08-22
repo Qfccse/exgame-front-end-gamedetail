@@ -1,10 +1,15 @@
 <!--张宇 1952168-->
 <template>
     <div class="canvas">
+        <div style="height: 50px"></div>
         <GameCarousel :game_id="this.game_id"></GameCarousel>
+        <div style="height: 50px"></div>
         <GameInfo :game_id="this.game_id"></GameInfo>
+        <div style="height: 50px"></div>
         <GameRecommended :game_id="this.game_id"></GameRecommended>
+        <div style="height: 50px"></div>
         <GameComments :game_id="this.game_id" :user_id="this.user_id"></GameComments>
+        <div style="height: 50px"></div>
     </div>
 </template>
 
@@ -31,7 +36,8 @@ export default {
     position:fixed;
     width:100%;
     height:100vh;
-    background: url("../assets/imgs/gamebg.png")no-repeat;
+    /*background: url("../assets/imgs/gamebg.png")no-repeat;*/
+    background-color: black;
     overflow: auto;
 }
 

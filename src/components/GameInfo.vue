@@ -1,152 +1,156 @@
 <template>
-    <div class="m-content clearbox">
-        <div class="m-content-left fl">
-<!--            <div class="m-tt fl">测评</div>-->
-<!--            <div class="m-evaluation">-->
-<!--                <ul>-->
-<!--                    <li v-for="(evaluation,index) in evaluationList" :key="index" style="margin-bottom: 30px">-->
-<!--                        <p>{{evaluation.content}}</p>-->
-<!--                        <p>{{evaluation.score}}-<span>{{evaluation.host}}</span></p>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-            <!--关于这款游戏-->
-            <!-- DLC -->
-            <div class="m-tt fl">DLC</div>
-            <ul>
-                <li v-for="(dlc,index) in 3" :key="index">
-                    <div class="m-hot clearbox">
-                        <div class="m-hot-left fl">
-                            <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
-                                <img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128">
-                            </router-link>
-                        </div>
-                        <div class="m-hot-right fr">
-                            <div class="dlc-content">
-                                <p class="dlc-name">{{ dlcInfo[index].dlcName }}<p>
-                                <p class="dlc-intro">{{ dlcIntro[index].content }}</p>
-                            </div>
-                            <div>
-                                <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
-                                <router-link :to="{name:'ShoppingCart',params:{user_id:'000000001'}}">
-                                    <div class="dlc-add">加入购物车 ￥{{ dlcInfo[index].dlcPrice * dlcInfo[index].dlcDiscount/100}}</div>
+    <div style="width: 1055px;min-height:800px;margin: auto;border-radius: 10px;background-color: #e0e0e0;overflow: hidden" class="clearbox">
+        <div class="m-content clearbox">
+            <!--			应用特性-->
+            <div class="m-content-right fr">
+                <div class="panel">
+                    <h2>应用特性</h2>
+                    <table>
+                        <tr>
+                            <td><span class="iconfont icon-gouwucheman"></span></td>
+                            <td>{{ gameFeatures[0] }}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="iconfont icon-duoren"></span></td>
+                            <td>{{ gameFeatures[1] }}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="iconfont icon-youxiguanli"></span></td>
+                            <td>{{ gameFeatures[2] }}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="iconfont icon-bi"></span></td>
+                            <td>{{ gameFeatures[3] }}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="iconfont icon-lianjiezhuangtai"></span></td>
+                            <td>{{ gameFeatures[4] }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <!--				配置需求-->
+                <div class="panel">
+                    <h2>最低配置要求</h2>
+                    <table>
+                        <tr>
+                            <td >内存</td>
+                            <td>{{ minimumConfiguration[0] }}</td>
+                        </tr>
+                        <tr>
+                            <td>显卡</td>
+                            <td>{{ minimumConfiguration[1] }}</td>
+                        </tr>
+                        <tr>
+                            <td>硬盘</td>
+                            <td>{{ minimumConfiguration[2] }}</td>
+                        </tr>
+                        <tr>
+                            <td>CPU</td>
+                            <td>{{ minimumConfiguration[3] }}</td>
+                        </tr>
+                        <tr>
+                            <td>系统</td>
+                            <td>{{ minimumConfiguration[4] }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel">
+                    <h2>推荐配置要求</h2>
+                    <table>
+                        <tr>
+                            <td >内存</td>
+                            <td>{{recommendedConfiguration[0]}}</td>
+                        </tr>
+                        <tr>
+                            <td>显卡</td>
+                            <td> {{recommendedConfiguration[1]}}</td>
+                        </tr>
+                        <tr>
+                            <td >硬盘</td>
+                            <td >{{recommendedConfiguration[2]}}</td>
+                        </tr>
+                        <tr>
+                            <td >CPU</td>
+                            <td >{{recommendedConfiguration[3]}}</td>
+                        </tr>
+                        <tr>
+                            <td>系统</td>
+                            <td>{{recommendedConfiguration[4]}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <!--				语言-->
+                <div class="panel">
+                    <h2>语言</h2>
+                    <table>
+                        <tr>
+                            <td>界面</td>
+                            <td><ul><li v-for="(item,inedx) in uiLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
+                        </tr>
+                        <tr>
+                            <td >完全音频</td>
+                            <td><ul><li v-for="(item,inedx) in soundLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
+                        </tr>
+                        <tr>
+                            <td>文本</td>
+                            <td ><ul><li v-for="(item,inedx) in textLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="m-content-left fl">
+                <!--            <div class="m-tt fl">测评</div>-->
+                <!--            <div class="m-evaluation">-->
+                <!--                <ul>-->
+                <!--                    <li v-for="(evaluation,index) in evaluationList" :key="index" style="margin-bottom: 30px">-->
+                <!--                        <p>{{evaluation.content}}</p>-->
+                <!--                        <p>{{evaluation.score}}-<span>{{evaluation.host}}</span></p>-->
+                <!--                    </li>-->
+                <!--                </ul>-->
+                <!--            </div>-->
+                <!--关于这款游戏-->
+                <!-- DLC -->
+                <div class="m-tt fl">游戏拓展包</div>
+                <ul>
+                    <li v-for="(dlc,index) in 3" :key="index">
+                        <div class="m-hot clearbox">
+                            <div class="m-hot-left fl">
+                                <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
+                                    <img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128">
                                 </router-link>
                             </div>
+                            <div class="m-hot-right fr">
+                                <div class="dlc-content">
+                                    <p class="dlc-name">{{ dlcInfo[index].dlcName }}<p>
+                                    <p class="dlc-intro">{{ dlcIntro[index].content }}</p>
+                                </div>
+                                <div>
+                                    <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
+                                    <router-link :to="{name:'ShoppingCart',params:{user_id:'000000001'}}">
+                                        <div class="dlc-add">加入购物车
+                                            <span v-if="dlcInfo[index].dlcDiscount!==100" style="text-decoration: line-through;color: #aaaaaa">￥{{ dlcInfo[index].dlcPrice}}</span>
+                                            <span>&nbsp;￥{{ dlcInfo[index].dlcPrice * dlcInfo[index].dlcDiscount/100}}</span>
+                                        </div>
+                                    </router-link>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </li>
-            </ul>
-            <div class="m-tt fl">关于这款游戏</div>
-            <div class="m-introduction">
-                <ul>
-                    <li v-for="(intro,index) in aboutGame" :key="index">
-                        <a href="#">
-                            <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
-                        </a>
-                        <div class="about-content">{{intro.content}}</div>
                     </li>
                 </ul>
-            </div>
-
-
-        </div>
-        <!--			应用特性-->
-        <div class="m-content-right fr">
-            <div class="panel">
-                <h2>应用特性</h2>
-                <table>
-                    <tr >
-                        <td><span class="iconfont icon-gouwucheman"></span></td>
-                        <td>{{ gameFeatures[0] }}</td>
-                    </tr>
-                    <tr>
-                        <td><span class="iconfont icon-duoren"></span></td>
-                        <td>{{ gameFeatures[1] }}</td>
-                    </tr>
-                    <tr>
-                        <td><span class="iconfont icon-youxiguanli"></span></td>
-                        <td>{{ gameFeatures[2] }}</td>
-                    </tr>
-                    <tr>
-                        <td><span class="iconfont icon-bi"></span></td>
-                        <td>{{ gameFeatures[3] }}</td>
-                    </tr>
-                    <tr >
-                        <td><span class="iconfont icon-lianjiezhuangtai"></span></td>
-                        <td>{{ gameFeatures[4] }}</td>
-                    </tr>
-                </table>
-            </div>
-            <!--				配置需求-->
-            <div class="panel">
-                <h2>最低配置要求</h2>
-                <table>
-                    <tr>
-                        <td >内存</td>
-                        <td>{{ minimumConfiguration[0] }}</td>
-                    </tr>
-                    <tr>
-                        <td>显卡</td>
-                        <td>{{ minimumConfiguration[1] }}</td>
-                    </tr>
-                    <tr >
-                        <td>硬盘</td>
-                        <td>{{ minimumConfiguration[2] }}</td>
-                    </tr>
-                    <tr>
-                        <td>CPU</td>
-                        <td>{{ minimumConfiguration[3] }}</td>
-                    </tr>
-                    <tr>
-                        <td>系统</td>
-                        <td>{{ minimumConfiguration[4] }}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="panel">
-                <h2>推荐配置要求</h2>
-                <table >
-                    <tr >
-                        <td >内存</td>
-                        <td>{{recommendedConfiguration[0]}}</td>
-                    </tr>
-                    <tr>
-                        <td>显卡</td>
-                        <td> {{recommendedConfiguration[1]}}</td>
-                    </tr>
-                    <tr >
-                        <td >硬盘</td>
-                        <td >{{recommendedConfiguration[2]}}</td>
-                    </tr>
-                    <tr >
-                        <td >CPU</td>
-                        <td >{{recommendedConfiguration[3]}}</td>
-                    </tr>
-                    <tr >
-                        <td>系统</td>
-                        <td>{{recommendedConfiguration[4]}}</td>
-                    </tr>
-                </table>
-            </div>
-            <!--				语言-->
-            <div class="panel">
-                <h2>语言</h2>
-                <table>
-                    <tr>
-                        <td>界面</td>
-                        <td><ul><li v-for="(item,inedx) in uiLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
-                    </tr>
-                    <tr>
-                        <td >完全音频</td>
-                        <td><ul><li v-for="(item,inedx) in soundLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
-                    </tr>
-                    <tr >
-                        <td>文本</td>
-                        <td ><ul><li v-for="(item,inedx) in textLanguage" :key="inedx" style="display: inline">{{item}} </li></ul></td>
-                    </tr>
-                </table>
+                <div class="m-tt fl">关于这款游戏</div>
+                <div class="m-introduction">
+                    <ul>
+                        <li v-for="(intro,index) in aboutGame" :key="index">
+                            <a href="#">
+                                <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
+                            </a>
+                            <div class="about-content">{{intro.content}}</div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <div style="height: 20px" class="clearbox"></div>
     </div>
 </template>
 
@@ -171,7 +175,7 @@ export default {
         }
     },
     mounted() {
-       setTimeout(this.fun,600)
+        setTimeout(this.fun,600)
     },
     methods:{
         fun(){
@@ -404,10 +408,11 @@ a{
 }
 .about-content{
     white-space: pre-wrap;   /*这是重点。文本换行*/
+    min-height: 200px;
 }
 .m-tt{
     font-weight: normal;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-top: 20px;
     font-size: 20px;
 }
@@ -548,17 +553,23 @@ a{
     height: 148px;
     width: 505px;
     border: black 1px solid;
+    border-radius: 5px;
 }
 
 .dlc-name{
     font-size: 20px;
     font-weight: bolder;
     margin-bottom: 10px;
+    text-align: left;
+}
+.dlc-intro{
+    text-align: left;
+    white-space: pre-wrap;
 }
 .dlc-content{
     height: 105px;
-    white-space: pre-wrap;
     margin-top: 10px;
+    margin-left: 10px;
 }
 .dlc-publish-time{
     height: 20px;
@@ -571,7 +582,7 @@ a{
 }
 .dlc-add{
     /*border: #000000 1px solid;*/
-    width: 180px;
+    width: 200px;
     height: 20px;
     float: right;
     margin-top: 10px;
@@ -580,7 +591,7 @@ a{
     line-height: 20px;
     color: white;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: bold;
     border-radius: 5px;
     background-color: #3B9CFF;
 }

@@ -44,7 +44,7 @@
                                <p>此DLC依赖本体才可运行，请先购买本体</p>
                                <!--                                <a>前往购买</a>-->
                            </div>
-                           <span class="game-price fr">￥{{game.price}}</span>
+                           <span class="game-price fr" v-if="game.discount!==100">￥{{game.price}}</span>
                            <span class="game-discount fr">￥{{game.price * game.discount/100}}</span>
                        </div>
                        <span class="delete-button fr" @click="click2Delete(index)">移除</span>
@@ -228,15 +228,15 @@ export default {
                 this.createQRcode ('ali' + this.sum)
                 this.payIco = this.payPattern[0];
                 document.getElementById('ali-pay').style.border = '#3B9CFF 1px solid'
-                document.getElementById('ali-pay').style.backgroundColor = 'rgb(187, 255, 255, 10%)'
+                document.getElementById('ali-pay').style.backgroundColor = 'rgb(187, 255, 255, 20%)'
                 document.getElementById('wechat-pay').style.border = '#eeeeee  1px solid'
                 document.getElementById('wechat-pay').style.backgroundColor = 'transparent'
             }
             else {
                 this.createQRcode ('wechat' + this.sum)
                 this.payIco = this.payPattern[1];
-                document.getElementById('wechat-pay').style.border = '#3B9CFF 1px solid'
-                document.getElementById('wechat-pay').style.backgroundColor = 'rgb(187, 255, 255, 10%)'
+                document.getElementById('wechat-pay').style.border = '#00EE76 1px solid'
+                document.getElementById('wechat-pay').style.backgroundColor = 'rgb(127, 255, 212, 10%)'
                 document.getElementById('ali-pay').style.border = '#eeeeee  1px solid'
                 document.getElementById('ali-pay').style.backgroundColor = 'transparent'
             }

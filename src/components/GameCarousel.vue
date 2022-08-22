@@ -4,56 +4,62 @@
         <div class="carousel-title">
             {{gameName}}
         </div>
-        <div class="carousel-body">
-            <div class="m-ad clearbox">
-                <div class="m-ad-left fl">
-                    <div class="m-ad-left-top" id="screen">
-                        <video ref="main-player-1" v-show="this.mediaMap[anchorPos].srcType===1" src="" controls width="705" height="400" muted autoplay></video>
-                        <img ref="main-player-2" v-show="this.mediaMap[anchorPos].srcType===2" src="" width="705" height="400" alt="">
+        <div style="width: 1055px;margin: auto;border-radius: 10px;background-color: #e0e0e0">
+            <div style="height: 20px"></div>
+            <div class="carousel-body">
+                <div class="m-ad clearbox">
+                    <div class="m-ad-left fl">
+                        <div class="m-ad-left-top" id="screen">
+                            <video ref="main-player-1" v-show="this.mediaMap[anchorPos].srcType===1" src="" controls width="705" height="400" muted autoplay></video>
+                            <img ref="main-player-2" v-show="this.mediaMap[anchorPos].srcType===2" src="" width="705" height="400" alt="">
+                        </div>
+                        <div class="m-ad-left-bottom">
+                            <span class="iconfont icon-arrow-left fl" @click="click2Before()"></span>
+                            <ul>
+                                <li v-for="(temp,index) in showNum" :key="index">
+                                    <!--                                <span>{{this.mediaMap[index].coverPath}}</span>-->
+                                    <img class="media-list" v-if="launched===false" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/Game/0000000006/Exhibition/Photo/' +'logo.png')" width="103" height="60" @click="click2Choose(index)">
+                                    <img class="media-list" v-if="launched===true" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/' + mediaMap[index].coverPath)" width="103" height="60" @click="click2Choose(index)">
+                                    <img class="play-button" v-if="mediaMap[index].srcType===1" :id="getID(index-1,'pbutton-')" src="../assets/play-button.jpg" width="20" height="20" @click="click2Choose(index)" >
+                                </li>
+                            </ul>
+                            <span class="iconfont icon-iconfontjiantou5 fr" @click="click2Next()"></span>
+                        </div>
                     </div>
-                    <div class="m-ad-left-bottom">
-                        <span class="iconfont icon-arrow-left fl" @click="click2Before()"></span>
-                        <ul>
-                            <li v-for="(temp,index) in showNum" :key="index">
-                                <!--                                <span>{{this.mediaMap[index].coverPath}}</span>-->
-                                <img class="media-list" v-if="launched===false" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/Game/0000000006/Exhibition/Photo/' +'logo.png')" width="103" height="60" @click="click2Choose(index)">
-                                <img class="media-list" v-if="launched===true" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/' + mediaMap[index].coverPath)" width="103" height="60" @click="click2Choose(index)">
-                                <img class="play-button" v-if="mediaMap[index].srcType===1" :id="getID(index-1,'pbutton-')" src="../assets/play-button.jpg" width="20" height="20" @click="click2Choose(index)" >
-                            </li>
-                        </ul>
-                        <span class="iconfont icon-iconfontjiantou5 fr" @click="click2Next()"></span>
+                    <div class="m-ad-right fr">
+                        <table >
+                            <tr >
+                                <td>发行日期</td>
+                                <td >{{publishDate.slice(0,10)}}</td>
+                            </tr>
+                            <tr>
+                                <td>开发商</td>
+                                <td>{{developer}}</td>
+                            </tr>
+                            <tr >
+                                <td>发行商</td>
+                                <td>{{publisher}}</td>
+                            </tr>
+                            <tr >
+                                <td>发行平台</td>
+                                <td>{{publishPlat}}</td>
+                            </tr>
+                        </table>
+                        <div class="tag-box" >
+                            <ul>
+                                <li v-for="(src,index) in tagList" :key="index">
+                                    <p>{{ src }}</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <router-link :to="{name:'ShoppingCart',params:{user_id:this.game_id}}">
+                            <a href="#">
+                                加入购物车
+                                <span v-if="discount!==100" style="text-decoration: line-through;color: #aaaaaa">￥{{price}}</span>
+                                <span>&nbsp;￥{{price*discount/100}}</span>
+                            </a>
+                        </router-link>
                     </div>
-                </div>
-                <div class="m-ad-right fr">
-                    <table >
-                        <tr >
-                            <td>发行日期</td>
-                            <td >{{publishDate.slice(0,10)}}</td>
-                        </tr>
-                        <tr>
-                            <td>开发商</td>
-                            <td>{{developer}}</td>
-                        </tr>
-                        <tr >
-                            <td>发行商</td>
-                            <td>{{publisher}}</td>
-                        </tr>
-                        <tr >
-                            <td>发行平台</td>
-                            <td>{{publishPlat}}</td>
-                        </tr>
-                    </table>
-                    <div class="tag-box" >
-                        <ul>
-                            <li v-for="(src,index) in tagList" :key="index">
-                                <p>{{ src }}</p>
-                            </li>
-                        </ul>
-
-                    </div>
-                    <router-link :to="{name:'ShoppingCart',params:{user_id:this.game_id}}">
-                        <a href="#">加入购物车 ￥{{price*(100-discount)/100}}<span v-if="discount!==0" style="color: red">  {{ discount }}%off</span></a>
-                    </router-link>
                 </div>
             </div>
         </div>
@@ -345,8 +351,9 @@ a{
 }
 .carousel-body{
     width: 1005px;
-    height: 525px;
+    height: 505px;
     margin: 0 auto;
+    border-radius: 15px;
 }
 .carousel-title{
     width: 1005px;
@@ -354,7 +361,8 @@ a{
     margin: 0 auto;
     font-size: 36px;
     font-weight: bolder;
-    color: black;
+    color: #eeeeee;
+    font-family: Arial, YouYuan, sans-serif;
 }
 
 .play-button{
@@ -429,6 +437,7 @@ a{
     padding: 1px;
     display: table-cell;
     vertical-align: middle;
+    text-align: center;
 }
 
 .m-ad-right table tr td:last-of-type{
@@ -440,7 +449,7 @@ a{
 .m-ad-right table tr:nth-of-type(3) td:last-of-type::after{
     content: "";
     display: block;
-    border-bottom: 2px dashed #ccc;
+    /*border-bottom: 2px dashed #ccc;*/
     width: 48px;
 
 }
@@ -467,7 +476,7 @@ a{
     width: 260px;
     height: 45px;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
     line-height: 45px;
     font-weight: 900;
