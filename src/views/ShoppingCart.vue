@@ -1,3 +1,4 @@
+<!--1952168 张宇-->
 <template>
     <div class="canvas">
         <div style="width: 1055px;margin:100px auto;border-radius: 10px;background-color: #e0e0e0;overflow: hidden" class="clearbox">
@@ -55,18 +56,36 @@
                     <div style="height:  5px"></div>
                 </div>
                 <div class="cart-foot clearbox">
-                    <div class="m-user">
+                    <div class="m-user clearbox">
                         <span class="fl" style="font-size: 12px;color: #666666">购买至：</span>
-                        <div class="user-head fl">
-                            <img  :src="require('../assets/imgs/' + user.head)"  alt="" height="36" width="36" >
-                        </div>
-                        <div class="user-info fl">
-                            <span style="font-weight: bolder">{{user.name}}</span>
-                            <span style="color: #666666">（id：{{user_id}}）</span>
+                        <div @click="click2OpenFriend()">
+                            <div class="user-head fl">
+                                <img  :src="require('../assets/imgs/' + user.head)"  alt="" height="36" width="36" >
+                            </div>
+                            <div class="user-info fl">
+<!--                                <span style="font-weight: bolder">{{user.name}}</span>-->
+<!--                                <span style="color: #666666">（id：{{user_id}}）</span>-->
+                                <div style="font-weight: bolder;width: 80px;display: inline-block;">{{user.name}}</div>
+                                <div style="color: #666666;display: inline;">（id：{{user.id}}）</div>
+                            </div>
                         </div>
                         <div>
                             {{num}}&nbsp;款内容合计：￥{{sum}}
                         </div>
+                    </div>
+                    <div id="s1" class="select-bar" style="z-index: 999;display: none;position: absolute">
+                        <p v-if="friendList.length===1">没有好友</p>
+                        <ul v-else>
+                            <li :id="getID(index+1,'s1l')" v-for="(friend,index) in friendList" :key="index" @click="click2ChooseFriend(index)" @mouseenter="onHover(getID(index+1,'s1l'))" @mouseleave="onLeave(getID(index+1,'s1l'))">
+                                <div class="friend-head fl">
+                                    <img  :src="require('../assets/imgs/' + friend.head)"  alt="" height="36" width="36" >
+                                </div>
+                                <div class="friend-info fl">
+                                    <div style="font-weight: bolder;width: 80px;display: inline-block;">{{friend.name}}</div>
+                                    <div style="color: #666666;display: inline;">（id：{{friend.id}}）</div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     <div class="buy-info clearbox">
                         <div class="fl">
@@ -102,6 +121,7 @@ export default {
             user:{
                 head:'h1.jpg',
                 name:'123456',
+                id:'1234567891',
             },
             payIco: {
                 name:"支付宝",
@@ -118,37 +138,16 @@ export default {
                 }
             ],
             chosenIndex:[],
-            gameList:[
-                // {
-                //     id:'',
-                //     poster:'Game/0000000001/Cover/cover.jpg',
-                //     name:'ring',
-                //     price:123,
-                //     discount:80,
-                //     isDLC:false,
-                // },
-                // {
-                //     id:'',
-                //     poster:'Game/0000000001/Cover/cover.jpg',
-                //     name:'ring',
-                //     price:1,
-                //     discount:100,
-                //     isDLC:true,
-                // },
-                // {
-                //     id:'',
-                //     poster:'Game/0000000001/Cover/cover.jpg',
-                //     name:'ring',
-                //     price:12,
-                //     discount:100,
-                //     isDLC:false,
-                // },
+            gameList:[],
+            friendList:[
+
             ],
         }
     },
     mounted() {
         // console.log('+++++++++++++' + this.user_id)
         this.getData('0000000001')
+        this.getFriend('0000000012')
     },
     methods:{
         getID:function (index,pre){
@@ -160,7 +159,6 @@ export default {
                 alert('uid 不能为空')
                 return;
             }
-
             this.$axios.post('api/shopingcart/getUserShoppingCart', {
                 user_id: uid,
             }).then( res => {
@@ -338,6 +336,72 @@ export default {
                 }
             }, 1000)
         },
+        click2OpenFriend:function (){
+            var id = 's1'
+            var ss  = document.getElementById(id)
+            if(ss.style.display === 'block')
+            {
+                ss.style.display = 'none'
+            }
+            else
+            {
+                ss.style.display = 'block';
+            }
+        },
+        click2ChooseFriend:function (index){
+            this.user = this.friendList[index]
+            var ss  = document.getElementById('s1')
+            if(ss.style.display === 'block')
+            {
+                ss.style.display = 'none'
+            }
+            else
+            {
+                ss.style.display = 'block';
+            }
+        },
+        onHover:function (id){
+            var it =  document.getElementById(id)
+            it.style.backgroundColor = '#e9e9e9'
+
+        },
+        onLeave:function (id){
+            var it =  document.getElementById(id)
+            it.style.backgroundColor = 'transparent';
+        },
+        getFriend:function (uid){
+            if(uid.length===0)
+            {
+                alert('uid 不能为空')
+                return;
+            }
+            this.$axios.post('api/user/getFriendsList', {
+                id: uid,
+            }).then( res => {
+                switch(res.data.result){
+                    case 1:
+                        console.log("好友 请求成功");
+                        break;
+                    default:
+                        console.log('好友 请求失败')
+                        break;
+                }
+                this.friendList.push(this.user)
+                for(let i in res.data.friends_list)
+                {
+                    console.log(res.data.friends_list[i].id + res.data.friends_list[i].profile_photo + '++++++')
+                    this.friendList.push(
+                        {
+                            head:'h1.jpg',
+                            name:res.data.friends_list[i].name,
+                            id:res.data.friends_list[i].id,
+                        }
+                    )
+                }
+            }).catch( err => {
+                console.log(err);
+            })
+        }
     }
 }
 </script>
@@ -491,6 +555,34 @@ ul, ol{
     margin-left: 10px;
     width: 670px;
 }
+.friend-head{
+    border:  white 2px solid;
+    width: 40px;
+    height: 40px;
+    margin-left: 7px;
+    border-radius:50%;
+    overflow:hidden;
+}
+.friend-info{
+    margin-left: 10px;
+    /*width: 200px;*/
+}
+.select-bar{
+    border: #aaaaaa 1px solid;
+    width: 300px;
+    border-radius: 8px;
+    align-items: center;
+    margin-left: 70px;
+    background-color: white;
+    box-shadow: darkgrey 1px 1px 1px 1px;
+}
+.select-bar li{
+    height: 40px;
+    /*font-size: 12px;*/
+    line-height:40px;
+    margin-top: 5px;
+}
+
 .buy-info{
     height: 60px;
     line-height: 60px;
@@ -512,6 +604,9 @@ ul, ol{
     -webkit-user-select:none ;
     -moz-user-select:none;
 }
+
+
+
 .header-title{
     text-align: center;
     height: 0;
