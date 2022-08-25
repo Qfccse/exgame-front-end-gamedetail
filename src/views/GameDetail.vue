@@ -8,7 +8,7 @@
         <div style="height: 50px"></div>
         <GameRecommended :game_id="this.game_id"></GameRecommended>
         <div style="height: 50px"></div>
-        <GameComments :game_id="this.game_id" :user_id="this.user_id"></GameComments>
+        <GameComments :game_id="this.game_id"></GameComments>
         <div style="height: 50px"></div>
     </div>
 </template>
