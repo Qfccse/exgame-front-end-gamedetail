@@ -3,23 +3,23 @@
     <div class="canvas">
         <div style="width: 1055px;margin:100px auto;border-radius: 10px;background-color: #e0e0e0;overflow: hidden" class="clearbox">
             <div class="clearbox" style="display: flex">
-            <el-dialog width="350px"  :visible="dialogVisible" :modal-append-to-body='false' @close="click2Close()">
-                <div slot="title" class="header-title">
-                    <span> 臻Game 游戏购买 </span>
-                </div>
-                <p style="width: 220px;margin: auto;text-align: left">请选择支付方式：</p ><br/>
-                <div class="pay-button clearbox">
-                    <span id="ali-pay" class="fl" @click="click2ChoosePay(1)">支付宝支付</span>
-                    <span id="wechat-pay" class="fr"  @click="click2ChoosePay(2)">微信支付</span>
-                </div>
-                <div class="pay-amount clearbox">
-                    <img class="fl" :src="payIco.ico" height="18px">
-                    <span>&nbsp;{{payIco.name}}扫码，支付&nbsp;<span style="font-size: 18px;font-weight: bolder">{{sum-sub}}</span>&nbsp;元</span>
-                </div>
-                <span class="pay-done" v-if="this.sec<3">支付完成</span>
-                <div class="qr-code clearbox" id="qrcode" v-else> </div>
-            </el-dialog>
-        </div>
+                <el-dialog width="350px"  :visible="dialogVisible" :modal-append-to-body='false' @close="click2Close()">
+                    <div slot="title" class="header-title">
+                        <span> 臻Game 游戏购买 </span>
+                    </div>
+                    <p style="width: 220px;margin: auto;text-align: left">请选择支付方式：</p ><br/>
+                    <div class="pay-button clearbox">
+                        <span id="ali-pay" class="fl" @click="click2ChoosePay(1)">支付宝支付</span>
+                        <span id="wechat-pay" class="fr"  @click="click2ChoosePay(2)">微信支付</span>
+                    </div>
+                    <div class="pay-amount clearbox">
+                        <img class="fl" :src="payIco.ico" height="18px">
+                        <span>&nbsp;{{payIco.name}}扫码，支付&nbsp;<span style="font-size: 18px;font-weight: bolder">{{sum-sub}}</span>&nbsp;元</span>
+                    </div>
+                    <span class="pay-done" v-if="this.sec<3">支付完成</span>
+                    <div class="qr-code clearbox" id="qrcode" v-else> </div>
+                </el-dialog>
+            </div>
             <div class="shopping-cart">
                 <div class="cart-head">
                     您已选择{{num}}款内容
@@ -139,9 +139,7 @@ export default {
             ],
             chosenIndex:[],
             gameList:[],
-            friendList:[
-
-            ],
+            friendList:[],
         }
     },
     mounted() {
@@ -569,12 +567,24 @@ ul, ol{
 }
 .select-bar{
     border: #aaaaaa 1px solid;
-    width: 300px;
+    width: 320px;
+    height: 180px;
     border-radius: 8px;
     align-items: center;
     margin-left: 70px;
     background-color: white;
     box-shadow: darkgrey 1px 1px 1px 1px;
+    overflow-y: auto;
+}
+::-webkit-scrollbar
+{
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background-color: #999;
 }
 .select-bar li{
     height: 40px;
