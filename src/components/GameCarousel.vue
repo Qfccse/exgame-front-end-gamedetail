@@ -1,8 +1,17 @@
 <!--张宇 1952168-->
 <template>
     <div class="GameCarousel">
-        <div class="carousel-title">
-            {{gameName}}
+        <div>
+            <div class="carousel-title">
+                {{gameName}}
+                RING
+                <router-link :to="{name:'GameColumn',params:{game_id:this.game_id}}">
+                    <div class="to-column fr">
+                        <span>前往论坛</span>
+                    </div>
+                </router-link>
+            </div>
+
         </div>
         <div style="width: 1055px;margin: auto;border-radius: 10px;background-color: #e0e0e0">
             <div style="height: 20px"></div>
@@ -18,7 +27,7 @@
                             <ul>
                                 <li v-for="(temp,index) in showNum" :key="index">
                                     <!--                                <span>{{this.mediaMap[index].coverPath}}</span>-->
-                                    <img class="media-list" v-if="launched===false" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/Game/0000000006/Exhibition/Photo/' +'logo.png')" width="103" height="60" @click="click2Choose(index)">
+                                    <img class="media-list" v-if="launched===false" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../assets/logo.png')" width="103" height="60" @click="click2Choose(index)">
                                     <img class="media-list" v-if="launched===true" :ref="getID(index,'mask-')" :id="getID(index,'mask-')" :src="require('../../../ExGame-Asset/' + mediaMap[index].coverPath)" width="103" height="60" @click="click2Choose(index)">
                                     <img class="play-button" v-if="mediaMap[index].srcType===1" :id="getID(index-1,'pbutton-')" src="../assets/play-button.jpg" width="20" height="20" @click="click2Choose(index)" >
                                 </li>
@@ -368,6 +377,20 @@ a{
 }
 .clearbox{
     clear:both;
+}
+.to-column{
+    font-size: 16px;
+    height: 30px;
+    width: 90px;
+    line-height: 25px;
+    font-weight: bolder;
+    border-radius: 13px;
+    border: white 2px solid;
+    background-color: #eeeeee;
+    /*color: #666666;*/
+    text-align: center;
+    position: relative;
+    top:10px;
 }
 .carousel-body{
     width: 1005px;
