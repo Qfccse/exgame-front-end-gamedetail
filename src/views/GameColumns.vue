@@ -28,13 +28,11 @@
                 </span>
                 </div>
             </div>
-            <el-dialog  :visible.sync="showImg" width="400px" append-to-body>
-                <img ref="img-board" :src="imgSrc" width="360px" style="margin:auto">
-                <div slot="footer" class="dialog-footer">
-                    <span class="iconfont icon-arrow-left fl"  @click="click2Before"></span>
-                    <span class="iconfont icon-iconfontjiantou5 fr" @click="click2Next"></span>
-                </div>
-            </el-dialog>
+            <div class="dialog-wrapper">
+                <el-dialog  :visible.sync="showBigImg" width="800px" append-to-body style="background-color: transparent">
+                    <img  :src="bigImgSrc" width="800px" style="margin:auto">
+                </el-dialog>
+            </div>
             <div class="column-page clearbox">
                 <ul class="column-left fl">
                     <ColumnCreator></ColumnCreator>
@@ -50,10 +48,55 @@
                         </div>
                         <div class="column-title">{{column.title}}</div>
                         <div class="column-content">{{column.content}}</div>
-                        <div class="column-image clearbox">
+                        <div style="margin-top: 10px;" v-show="showImg===index">
+                            <div class="clearbox" style="width: 705px">
+                                <div class="fl" style="width: 92px;height: 30px"></div>
+                                <div class="op-buttons" style="margin-left: 10px">
+                                <span @click="click2CloseImg">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                    </svg>
+                                   <span style="position: relative;top:-3px"> 点击收起</span>
+                                </span>
+                                    <span style="margin-left: 20px" @click="click2Big">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                    <span style="position: relative;top:-3px"> 查看大图</span>
+                                </span>
+<!--                                    <span style="margin-left: 20px" @click="click2RotateL">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">-->
+<!--                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>-->
+<!--                                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>-->
+<!--                                    </svg>-->
+<!--                                    <span style="position: relative;top:-3px"> 向左旋转</span>-->
+<!--                                </span>-->
+<!--                                    <span style="margin-left: 20px">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">-->
+<!--                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>-->
+<!--                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>-->
+<!--                                    </svg>-->
+<!--                                   <span style="position: relative;top:-3px">  向右旋转</span>-->
+<!--                                </span>-->
+                                </div>
+                            </div>
+                            <div id="arrow-l" class="fl" :style="arrowStyle">
+                                <span class="iconfont icon-arrow-left"  @click="click2Before"></span>
+                            </div>
+                            <div class="show-board fl">
+                                <img ref="img-board" id="board" :src="imgSrc" width="500px">
+                            </div>
+                            <div id="arrow-r" class="fr" :style="arrowStyle">
+                                <span class="iconfont icon-iconfontjiantou5 " @click="click2Next"></span>
+                            </div>
+                            <div class="clearbox"  style="height: 20px"></div>
+                        </div>
+                        <div class="column-image clearbox" id="column-image">
                             <ul>
                                 <li v-for="(img,i) in column.imageList.slice(0,columnShowImage[index])" :key="i">
-                                    <div class="m-image fl" @click=" click2ShowImg(index,i)">
+                                    <div class="m-image fl" @click=" click2ShowImg(index,i)" :id="getID2(index,i)">
                                         <img :src="require('../assets/imgs/' + img)">
                                     </div>
                                 </li>
@@ -104,7 +147,6 @@
                         <div style="line-height: 30px;height: 30px">客服电话</div>
                         <div style="line-height: 30px;height: 30px">021-222222</div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -123,10 +165,18 @@ export default {
     },
     data(){
         return{
-            showImg:false,
-            imgSrc:'',
+            showImg:'999',
+            imgSrc:require('../assets/imgs/dlc1.jpg'),
             columnPos:0,
             imgPos:0,
+            showBigImg:false,
+            bigImgSrc:'',
+            arrowStyle:{
+                height:'100px',
+                lineHeight:'100px',
+                width:'102px',
+                textAlign:'center',
+            },
             columnShowImage:[4,3],
             columnList:[
                 {
@@ -177,32 +227,111 @@ export default {
             ],
         }
     },
+    mounted() {
+
+    },
     methods:{
         getID(index){
             return 'rep-' + index.toString()
         },
+        getID2(i,ii){
+            // console.log(i.toString() + '-'+  ii.toString())
+            return i.toString() + ii.toString()
+        },
+        click2CloseImg(){
+            if(this.showImg===999)
+            {
+                return
+            }
+            this.showImg =999;
+            for(let is=0;is<this.columnList.length;is++)
+            {
+                for(let index = 0;index<this.columnShowImage[is];index++)
+                {
+                    var temp = document.getElementById(this.getID2(is,index))
+                    temp.style.backgroundColor = 'black'
+                    temp.style.opacity = '1'
+                }
+            }
+        },
+        click2Big(){
+            this.showBigImg = true
+            this.bigImgSrc = this.imgSrc
+        },
         click2ShowImg(i,ii){
-            this.showImg = true
+            console.log(i + '++++++++++++++' + ii)
+            for(let is=0;is<this.columnList.length;is++)
+            {
+                for(let index = 0;index<this.columnShowImage[is];index++)
+                {
+                    var temp = document.getElementById(this.getID2(is,index))
+                    temp.style.backgroundColor = 'black'
+                    temp.style.opacity = '1'
+                }
+            }
+            this.showImg = i
+            console.log(this.showImg[i])
             this.columnPos = i
             this.imgPos =ii
             this.imgSrc = require('../assets/imgs/' + this.columnList[i].imageList[ii])
+            this.chanagArrowHeight();
+            for(let index = 0;index<this.columnShowImage[i];index++)
+            {
+                temp = document.getElementById(this.getID2(i,index))
+                temp.style.backgroundColor = 'black'
+                temp.style.opacity = '0.3'
+            }
+            document.getElementById(this.getID2(i,ii)).style.backgroundColor = 'black'
+            document.getElementById(this.getID2(i,ii)).style.opacity = '1'
+        },
+        chanagArrowHeight:function ()
+        {
+            var that = this
+            let h = 0;
+            let img =new Image()
+            img.src=that.imgSrc;
+            img.onload=function () {
+                // console.log('图片原始高度', img.height)
+                // console.log('图片原始宽度',img.width)
+                // console.log('图片原始宽度',h)
+                h = 500/img.width*img.height;
+                that.arrowStyle.height = h.toString() + 'px'
+                that.arrowStyle.lineHeight = h.toString() + 'px'
+            }
         },
         click2Next:function (){
-            console.log(1)
             var that = this
-            if( that.imgPos+1< that.columnList[ that.columnPos].imageList.length)
+            this.chanagArrowHeight();
+            if( that.imgPos+1< that.columnShowImage[that.columnPos])
             {
+
                 that.imgSrc = require('../assets/imgs/' + that.columnList[ that.columnPos].imageList[ that.imgPos+1])
                 that.imgPos++;
+                for(let index = 0;index<that.columnShowImage[that.columnPos];index++)
+                {
+                    console.log(index)
+                    document.getElementById(this.getID2(this.columnPos,index)).style.backgroundColor = 'black'
+                    document.getElementById(this.getID2(this.columnPos,index)).style.opacity = '0.3'
+                }
+                document.getElementById(this.getID2(this.columnPos,that.imgPos)).style.backgroundColor = 'black'
+                document.getElementById(this.getID2(this.columnPos,that.imgPos)).style.opacity = '1'
+
             }
         },
         click2Before:function (){
-            console.log(1)
             var  that = this;
-            if( that.imgPos>0)
+            this.chanagArrowHeight();
+            if( that.imgPos>0&&that.imgPos<that.columnShowImage[that.columnPos])
             {
                 that.imgSrc = require('../assets/imgs/' +  that.columnList[ that.columnPos].imageList[ that.imgPos-1])
                 that.imgPos--;
+                for(let index = 0;index<this.columnShowImage[that.columnPos];index++)
+                {
+                    document.getElementById(this.getID2(this.columnPos,index)).style.backgroundColor = 'black'
+                    document.getElementById(this.getID2(this.columnPos,index)).style.opacity = '0.3'
+                }
+                document.getElementById(this.getID2(this.columnPos,that.imgPos)).style.backgroundColor = 'black'
+                document.getElementById(this.getID2(this.columnPos,that.imgPos)).style.opacity = '1'
             }
         },
         click2ShowReply:function (index){
@@ -245,6 +374,26 @@ ul, ol{
     height:100vh;
     background-color: black;
     overflow: auto;
+}
+
+.go{
+    transform:rotate(90deg);
+    transition: all 0.2s;
+    height: 500px;
+}
+
+::v-deep .el-dialog__header {
+    padding: 0;
+    width: 100%;
+    height: 0;
+}
+::v-deep .el-dialog__footer {
+    padding: 0;
+    width: 100%;
+    height: 0;
+}
+::v-deep .el-dialog__body {
+    padding: 0 0 0 0;
 }
 .column-head{
     background-color: white;
@@ -304,6 +453,21 @@ ul, ol{
 .column-creator img{
     height: 30px;
     width: 30px;
+}
+.show-board{
+    width: 500px;
+    margin: auto;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+.op-buttons{
+    width: 500px;
+    display: inline-block;
+    height: 30px;
+    line-height: 35px;
+    border-radius: 10px 10px 0 0 ;
+    background-color: #eeeeee;
+    font-size: 12px;
 }
 .column-replies{
     border-top: #666666 1px solid;
@@ -399,9 +563,5 @@ ul, ol{
     margin-top: 10px;
 }
 .dialog-footer{
-    position: relative;
-    top:-20px;
-    height: 0px;
-    margin-bottom: 0;
 }
 </style>
