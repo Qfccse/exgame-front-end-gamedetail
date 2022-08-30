@@ -13,7 +13,7 @@
                     ><span style="position: relative;top:-10px">表情</span></el-button>
                 </el-popover>
             </div>
-            <span class="send-button fr">发表评论</span>
+            <span class="send-button fr" @click="click2Reply">发表评论</span>
         </div>
     </div>
 </template>
@@ -21,6 +21,7 @@
 <script>
 export default {
     name:"ColumnReplyer",
+    props:['column_id'],
     mounted() {
         const appData = require("../assets/emoji.json");
         for(let i in appData){
@@ -66,6 +67,28 @@ export default {
             // console.log(this.faceList[index]);
             console.log(this.textarea)
         },
+        sendReply:function (cid,uid,ct){
+            if(cid===null||uid===null)
+            {
+                alert('id 不能为空')
+                return;
+            }
+            // var self = this;
+            this.$axios.post('api/column/replyColumn', {
+                column_id:cid,
+                user_id:uid,
+                content:ct
+            }).then( res => {
+                console.log('reply' + res.data.result)
+            }).catch( err => {
+                console.log(err);
+            })
+        },
+        click2Reply(){
+            this.sendReply(this.column_id,'0000000005',this.textarea)
+            this.faceList = []
+            this.textarea= ""
+        }
     }
 
 }

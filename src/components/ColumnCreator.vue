@@ -1,7 +1,7 @@
 <template>
     <div class="editor clearbox">
         <input class="chatTitle" placeholder="请输入标题" v-model="title">
-        <textarea  v-model="textarea"  placeholder="发一个友善的帖子" class="chatText clearbox" ref="lczdTxt" id="textarea" @keydown="getHight"></textarea>
+        <textarea  v-model="textareaC"  placeholder="发一个友善的帖子" class="chatText clearbox" ref="lczdTxt" id="textareaC" @keydown="getHight"></textarea>
         <div class="rich-editor clearbox">
             <div class="chatIcon fl">
                 <el-popover placement="top-start" width="400" trigger="click" class="emoBox">
@@ -65,7 +65,7 @@ export default {
     data() {
         return {
             faceList: [],
-            textarea: "",
+            textareaC: "",
             title:"",
             uploadDisabled: false,
             logoId: "1", //专区logo id
@@ -148,7 +148,7 @@ export default {
                 })
         },
         submitFileForm() {
-            if(this.textarea===''||this.title==='')
+            if(this.textareaC===''||this.title==='')
             {
                 alert('帖子内容不能为空')
                 return
@@ -164,7 +164,6 @@ export default {
                 console.log(a, b)
             }
             this.postImg(fd)
-
         },
         getHight() { //
             let textArea = this.$refs.lczdTxt;
@@ -174,7 +173,7 @@ export default {
             }
         },
         getEmo(index) {
-            var textArea = document.getElementById('textarea');
+            var textArea = document.getElementById('textareaC');
             function changeSelectedText(obj, str) {
                 if (window.getSelection) {
                     // 非IE浏览器
@@ -190,7 +189,7 @@ export default {
                 }
             }
             changeSelectedText(textArea, this.faceList[index]);
-            this.textarea = textArea.value;// 要同步data中的数据
+            this.textareaC = textArea.value;// 要同步data中的数据
             // console.log(this.faceList[index]);
             console.log(this.textarea)
         },
