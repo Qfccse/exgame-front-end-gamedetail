@@ -42,7 +42,52 @@ export default {
                 textArea.style.height = "52px";
                 textArea.style.height = textArea.scrollHeight + "px";
             }
+        },
+        dePicText(tex){
+            var picedText = ''
+            console.log( this.faceList.length)
+            for(let i=0;i<tex.length;i++)
+            {
+                var flag = false
+                for(let j=0;j<this.faceList.length;j++)
+                {
+                    var temp = tex.slice(i,i+this.faceList[j].length)
+                    // console.log('切片位置' +i.toString() +' to ' +(i+this.faceList[j].length).toString() + temp)
+                    for(let k=0;k<this.faceList.length;k++)
+                    {
+                        if(temp===this.faceList[k])
+                        {
+                            console.log('加入' + this.faceList[k]);
+                            if(k<10)
+                            {
+                                picedText+=('@#' + k.toString() +  '  #')
+                            }
+                            else if(k<100)
+                            {
+                                picedText+=('@#' + k.toString() +  ' #')
+                            }
+                            // console.log(i)
 
+                            // console.log('cur i  ' + i.toString())
+                            i+=this.faceList[k].length-1;
+                            // console.log('then i  ' + i.toString())
+                            flag=true
+                            break;
+                        }
+                    }
+                    if(flag===true)
+                    {
+                        break
+                    }
+                }
+                if(flag===true)
+                {
+                    continue
+                }
+                console.log('加入' + tex[i])
+                picedText+=tex[i]
+            }
+            return picedText
         },
         getEmo(index) {
             var textArea = document.getElementById('textarea');
@@ -85,7 +130,7 @@ export default {
             })
         },
         click2Reply(){
-            this.sendReply(this.column_id,'0000000005',this.textarea)
+            this.sendReply(this.column_id,'0000000005',this.dePicText(this.textarea))
             this.faceList = []
             this.textarea= ""
         }

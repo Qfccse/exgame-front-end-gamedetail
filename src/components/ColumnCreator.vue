@@ -1,6 +1,6 @@
 <template>
     <div class="editor clearbox">
-        <input class="chatTitle" placeholder="请输入标题" v-model="title">
+        <input class="chatTitle" id="titleC" placeholder="请输入标题" v-model="title">
         <textarea  v-model="textareaC"  placeholder="发一个友善的帖子" class="chatText clearbox" ref="lczdTxt" id="textareaC" @keydown="getHight"></textarea>
         <div class="rich-editor clearbox">
             <div class="chatIcon fl">
@@ -20,7 +20,7 @@
                     <el-upload
                         :on-preview="handlePictureCardPreview"
                         :disabled="upload.isUploading"
-                        :multiple="true"
+                        :multiple="false"
                         :on-change="handleFileChange"
                         :before-remove="handleFileRemove"
                         :auto-upload="false"
@@ -30,13 +30,12 @@
                         list-type="picture-card"
                         :limit="limit"
                         :accept="fileType?fileType:'image/*'"
-                        action="http://localhost:6001/api/column/uploadColumnImage"
+                        action='https://jsonplaceholder.typicode.com/posts/'
                         :on-success="handleUploadSuccess"
                         :on-remove="handleRemove"
                     >
                         <i class="el-icon-plus"></i>
                     </el-upload>
-
                 </div>
                 <el-button
                     class="imgSelect"
@@ -68,12 +67,6 @@ export default {
             textareaC: "",
             title:"",
             uploadDisabled: false,
-            logoId: "1", //专区logo id
-            dialogVisible: false,
-            fileList: [],
-            form: {
-                dialogImageUrl: "1", //图片上传到后台之后，后台会返回一个id,只需要给后台传id,但是点击编辑的时候后台返回的是http地址
-            },
             upload: {
                 // 是否显示弹出层（用户导入）
                 open:true,
@@ -85,7 +78,7 @@ export default {
                 updateSupport: 0,
                 // 设置上传的请求头部
                 // 上传的地址
-                url: 'http://localhost:6001/api/column/uploadColumnImage',
+                url: 'http://localhost:6001/api/column/uploadColumnContent',
                 fileList: [],
                 fileName: []
             }
@@ -98,6 +91,52 @@ export default {
         }
     },
     methods: {
+        dePicText(tex){
+            var picedText = ''
+            console.log( this.faceList.length)
+            for(let i=0;i<tex.length;i++)
+            {
+                var flag = false
+                for(let j=0;j<this.faceList.length;j++)
+                {
+                    var temp = tex.slice(i,i+this.faceList[j].length)
+                    // console.log('切片位置' +i.toString() +' to ' +(i+this.faceList[j].length).toString() + temp)
+                    for(let k=0;k<this.faceList.length;k++)
+                    {
+                        if(temp===this.faceList[k])
+                        {
+                            console.log('加入' + this.faceList[k]);
+                            if(k<10)
+                            {
+                                picedText+=('@#' + k.toString() +  '  #')
+                            }
+                            else if(k<100)
+                            {
+                                picedText+=('@#' + k.toString() +  ' #')
+                            }
+                            // console.log(i)
+
+                            // console.log('cur i  ' + i.toString())
+                            i+=this.faceList[k].length-1;
+                            // console.log('then i  ' + i.toString())
+                            flag=true
+                            break;
+                        }
+                    }
+                    if(flag===true)
+                    {
+                        break
+                    }
+                }
+                if(flag===true)
+                {
+                    continue
+                }
+                console.log('加入' + tex[i])
+                picedText+=tex[i]
+            }
+            return picedText
+        },
         // 移除封面图
         handleRemove(file, fileList) {
             fileList,
@@ -130,39 +169,70 @@ export default {
         handleFileRemove(file, fileList) {
             this.upload.fileList = fileList;
         },
+
         postImg:function (fd){
-            this.$axios.post(
-                this.upload.url,
+            console.log('传输的参数是')
+            for (var [a, b] of fd.entries()) {
+                console.log(a, b);
+            }
+            this.$axios( {
+                url: 'api/column/uploadColumnContent',
+                data: fd,
+
+                method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(res => {
+                if(res.data.result === 1){
+                    alert('上传成功！');
+                    this.textareaC =''
+                    this.title = ''
+                    this.upload.fileList = []
+                }
+                else if(res.data.result===0)
                 {
-                    formData:fd,
-                },
+                    console.log('失败 result=' + res.data.result.toString())
+                }
+                else if(res.data.result===-1)
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                })
-                .then(res => {
-                    if(res.data.result === 1){
-                        alert('上传成功！');
-                    }else{
-                        alert('response.msg');
-                    }
-                })
+                    console.log('失败 result=' + res.data.result.toString())
+                }
+                else if(res.data.result===999)
+                {
+                    console.log('失败 result=' + res.data.result.toString())
+                }
+            })
+
         },
+
         submitFileForm() {
             if(this.textareaC===''||this.title==='')
             {
                 alert('帖子内容不能为空')
                 return
             }
+            let n=0;
             let fd = new FormData();
+            fd.append('user_id','0000000001')
+            fd.append('game_id','0000000006')
+            fd.append('title',this.dePicText(this.title))
+            fd.append('content',this.dePicText(this.textareaC))
+            fd.append('photo_num',this.upload.fileList.length)
             for (let i in this.upload.fileList)
             {
-                console.log(this.upload.fileList[i].name + 'img-' + i.toString())
-                fd.append('img-' + ' ' +  i.toString(), this.upload.fileList[i]);
+                n++
+                console.log('Pic'  +  n.toString() + 'Src')
+                fd.append('Pic'  +  n.toString() + 'Src', this.upload.fileList[i].raw);
                 this.upload.fileName.push(this.upload.fileList[i].name);
             }
-            for (let [a, b] of fd.entries()) {
-                console.log(a, b)
+            console.log('以上' + n + '张图片需要上传')
+            for(let i = n+1;i<=9;i++)
+            {
+                console.log('Pic'  +  i.toString() + 'Src')
+                fd.append('Pic'  +  i.toString() + 'Src', ' ');
             }
+            console.log( this.upload.fileList[0])
             this.postImg(fd)
         },
         getHight() { //
@@ -191,7 +261,28 @@ export default {
             changeSelectedText(textArea, this.faceList[index]);
             this.textareaC = textArea.value;// 要同步data中的数据
             // console.log(this.faceList[index]);
-            console.log(this.textarea)
+            console.log(this.textareaC)
+        },
+        getEmo2(index) {
+            var textArea = document.getElementById('titleC');
+            function changeSelectedText(obj, str) {
+                if (window.getSelection) {
+                    // 非IE浏览器
+                    textArea.setRangeText(str);
+                    // 在未选中文本的情况下，重新设置光标位置
+                    textArea.selectionStart += str.length;
+                    textArea.focus()
+                } else if (document.selection) {
+                    // IE浏览器
+                    obj.focus();
+                    var sel = document.selection.createRange();
+                    sel.text = str;
+                }
+            }
+            changeSelectedText(textArea, this.faceList[index]);
+            this.textareaC = textArea.value;// 要同步data中的数据
+            // console.log(this.faceList[index]);
+            console.log(this.textareaC)
         },
     }
 }

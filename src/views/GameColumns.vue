@@ -2,9 +2,12 @@
     <div class="canvas">
         <div style="width: 1055px;margin:100px auto;border-radius: 10px;background-color: #c0c0c0;overflow: hidden" class="clearbox">
             <div>
-                <span class="column-name fl">Ring</span>
+                <div style="height: 60px"></div>
+                <span class="column-name fl">{{gameName}}</span>
                 <div class="column-head clearbox">
-                    <img  src="../assets/imgs/anPoster.jpg">
+                    <div class="img-back">
+                        <img  :src="require('../../../ExGame-Asset/Game/' + '0000000006' + '/Cover/anCover.jpg')">
+                    </div>
                 </div>
                 <div style="
             text-align: center;
@@ -46,8 +49,8 @@
                                 {{column.name}}
                             </div>
                         </div>
-                        <div class="column-title">{{column.title}}</div>
-                        <div class="column-content">{{column.content}}</div>
+                        <div class="column-title">{{picText(column.title)}}</div>
+                        <div class="column-content">{{picText(column.content)}}</div>
                         <div style="margin-top: 10px;" v-show="showImg===index">
                             <div class="clearbox" style="width: 705px">
                                 <div class="fl" style="width: 92px;height: 30px"></div>
@@ -108,7 +111,7 @@
                                             <div class="reply-time fr">回复时间 {{reply.time}}&emsp;&emsp;&nbsp;&nbsp;&nbsp;</div>
                                         </div>
                                         <div class="reply-content">
-                                            {{reply.content}}
+                                            {{picText(reply.content)}}
                                         </div>
                                         <div style="height: 10px"></div>
                                     </div>
@@ -132,10 +135,10 @@
                         <ul>
                             <li v-for="(colum,index) in myColumns" :key="index" class="my-column">
                                 <div style="margin-left: 5px">
-                                    <div class="my-column-title fl">{{colum.title}}</div>
+                                    <div class="my-column-title fl">{{picText(colum.title)}}</div>
                                     <span style="height: 30px;line-height: 30px;font-size: 12px;text-decoration: underline">删除</span>
                                     <div class="clearbox">
-                                        <div class="my-column-content">{{colum.content}}</div>
+                                        <div class="my-column-content">{{picText(colum.content)}}</div>
                                         <div class="my-column-time">{{colum.releaseTime}}</div>
                                     </div>
                                 </div>
@@ -151,12 +154,12 @@
                                 <div style="margin-left: 5px">
                                     <div style="height: 5px"></div>
                                     <div style="min-height: 30px;width: 210px">
-                                        <div class="my-reply-content fl">回复：{{reply.content}}</div>
+                                        <div class="my-reply-content fl">回复：{{picText(reply.content)}}</div>
                                         <span class="fr" style="height: 30px;line-height: 30px;font-size: 12px;text-decoration: underline">删除</span>
                                     </div>
                                     <div class="clearbox">
                                         <div class="my-reply-time">{{reply.releaseTime}}</div>
-                                        <div class="my-reply-title">&nbsp;原贴：{{reply.title}}</div>
+                                        <div class="my-reply-title">&nbsp;原贴：{{picText(reply.title)}}</div>
                                     </div>
                                     <div style="height: 10px"></div>
                                 </div>
@@ -198,6 +201,9 @@ export default {
     },
     data(){
         return{
+            faceList: [],
+            gameName:'',
+            gamePoster:'',
             showImg:'999',
             imgSrc:'',
             columnPos:0,
@@ -281,9 +287,65 @@ export default {
         }
     },
     mounted() {
+        const appData = require("../assets/emoji.json");
+        for(let i in appData){
+            this.faceList.push(appData[i].char);
+        }
+        this.getGameName('0000000006')
         this.getColumns('0000000006',this.pgn)
     },
     methods:{
+        picText(tex)
+        {
+            var picedText = []
+            console.log(tex.length)
+            console.log( this.faceList.length)
+            for(let i=0;i<tex.length;i++)
+            {
+                var num = ''
+                console.log(tex[i])
+                console.log(i)
+                if(tex[i]==='@'&&tex[i+1]==='#'&&tex[i+5]==='#')
+                {
+                    num+=tex[i+2];
+                    num+=tex[i+3];
+                    num+=tex[i+4];
+                    console.log(tex[i+2] + tex[i+3]+ tex[i+4] + '-----')
+                    console.log(typeof parseInt(num))
+                    console.log(this.faceList[parseInt(num)])
+                    console.log('++++++')
+                    picedText+=this.faceList[parseInt(num)]
+                    i+=5
+                }
+                else{
+                    picedText+=tex[i]
+                }
+            }
+            return picedText
+        },
+        getGameName(gid){
+            if(gid.length !== 0)
+            {
+                this.$axios.post('api/gamedetail/getGameCarousel', {
+                    game_id: gid
+                }).then( res => {
+                    switch(res.data.result){
+                        case 1:
+                            console.log("name 请求成功");
+                            break;
+                        default:
+                            console.log('name 请求失败')
+                            break;
+                    }
+                    this.gameName = res.data.game_name
+                }).catch( err => {
+                    console.log(err);
+                })
+            }
+            else{
+                alert('游戏明不能为空')
+            }
+        },
         getReply:function (cid){
             if(cid===null)
             {
@@ -606,11 +668,24 @@ ul, ol{
     margin: 120px auto 0px;
 }
 .column-head img{
+    /*position: relative;*/
+    height: 160px;
+    /*margin-left: 50px;*/
+    /*top: -110px;*/
+    border-radius: 10px;
+    margin-top: 9px;
+    margin-left: 10px;
+}
+.img-back{
     position: relative;
     height: 180px;
+    width: 142px;
     margin-left: 50px;
-    top: -110px;
+    top: -120px;
     border-radius: 10px;
+    background-color: white;
+    border: #666666 1px solid;
+    box-shadow: 8px 8px 10px #888888;
 }
 .column-name{
     margin-left: 300px;
