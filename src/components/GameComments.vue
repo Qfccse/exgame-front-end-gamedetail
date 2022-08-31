@@ -441,6 +441,7 @@ export default {
         },
         pic:function ()
         {
+            console.log('pic')
             for(let i=0; i<this.comments.length; i++)
             {
                 // console.log(this.comments[i].myChoice.good)

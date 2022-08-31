@@ -3,12 +3,12 @@
     <div style="width: 1055px;height:280px;margin: auto;border-radius: 10px;background-color: #e0e0e0" class="clearbox">
     <div class="m-recommended clearbox">
             <div class="m-tt fl">推荐</div>
-            <ul style="margin: auto;width: 1000px;" class="clearbox">
+            <ul style="margin: auto;width: 1000px;" class="clearbox" v-if=" gameList.length===gameNum">
                 <li v-for="(game,index) in gameList" :key="index">
                     <div class="m-game-rec fl">
                         <router-link :to="{name:'GameDetail',params:{game_id:gameList[index]}}">
                             <div style="height: 125px;overflow: hidden">
-                                <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
+                                <img :src="require('../../../ExGame-Asset/' +  gameIntro[index].coverPath)">
                             </div>
                             <p class="game-name"> {{ gameInfo[index].gameName}}</p>
                             <p class="game-price">￥{{  gameInfo[index].price * (gameInfo[index].discount)/100 }}</p>
@@ -29,6 +29,7 @@ export default {
             gameList:[],
             gameInfo:[],
             gameIntro:[],
+            gameNum:0,
         }
     },
     mounted() {
@@ -118,12 +119,11 @@ export default {
                     }
                     for(i in res.data.about_game)
                     {
-                        i;
                         self.gameIntro.push({
-                            coverPath:'0000000006/Cover/cover.gif',
+                            coverPath:res.data.about_game[i].poster,
                             intro:res.data.about_game[i].content
                         }) ;
-                        break;
+                        this.gameNum++
                     }
                 }).catch( err => {
                     console.log(err);
