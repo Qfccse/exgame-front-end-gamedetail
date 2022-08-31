@@ -204,8 +204,8 @@ export default {
     },
     mounted() {
         this.getData(this.game_id,'0000000001',1,1,0,0,0);
-        setTimeout(this.init,600);
-        setTimeout(this.pic,610);
+        setTimeout(this.init,3000);
+        setTimeout(this.pic,3100);
     },
     methods:{
         click2Choose(index){

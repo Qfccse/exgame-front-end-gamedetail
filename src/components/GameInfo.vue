@@ -4,31 +4,31 @@
         <div class="m-content clearbox">
             <!--			应用特性-->
             <div class="m-content-right fr">
-                <div class="panel">
-                    <h2>应用特性</h2>
-                    <table>
-                        <tr>
-                            <td><span class="iconfont icon-gouwucheman"></span></td>
-                            <td>{{ gameFeatures[0] }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="iconfont icon-duoren"></span></td>
-                            <td>{{ gameFeatures[1] }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="iconfont icon-youxiguanli"></span></td>
-                            <td>{{ gameFeatures[2] }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="iconfont icon-bi"></span></td>
-                            <td>{{ gameFeatures[3] }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="iconfont icon-lianjiezhuangtai"></span></td>
-                            <td>{{ gameFeatures[4] }}</td>
-                        </tr>
-                    </table>
-                </div>
+                <!--                <div class="panel">-->
+                <!--                    <h2>应用特性</h2>-->
+                <!--                    <table>-->
+                <!--                        <tr>-->
+                <!--                            <td><span class="iconfont icon-gouwucheman"></span></td>-->
+                <!--                            <td>{{ gameFeatures[0] }}</td>-->
+                <!--                        </tr>-->
+                <!--                        <tr>-->
+                <!--                            <td><span class="iconfont icon-duoren"></span></td>-->
+                <!--                            <td>{{ gameFeatures[1] }}</td>-->
+                <!--                        </tr>-->
+                <!--                        <tr>-->
+                <!--                            <td><span class="iconfont icon-youxiguanli"></span></td>-->
+                <!--                            <td>{{ gameFeatures[2] }}</td>-->
+                <!--                        </tr>-->
+                <!--                        <tr>-->
+                <!--                            <td><span class="iconfont icon-bi"></span></td>-->
+                <!--                            <td>{{ gameFeatures[3] }}</td>-->
+                <!--                        </tr>-->
+                <!--                        <tr>-->
+                <!--                            <td><span class="iconfont icon-lianjiezhuangtai"></span></td>-->
+                <!--                            <td>{{ gameFeatures[4] }}</td>-->
+                <!--                        </tr>-->
+                <!--                    </table>-->
+                <!--                </div>-->
                 <!--				配置需求-->
                 <div class="panel">
                     <h2>最低配置要求</h2>
@@ -100,24 +100,13 @@
                 </div>
             </div>
             <div class="m-content-left fl">
-                <!--            <div class="m-tt fl">测评</div>-->
-                <!--            <div class="m-evaluation">-->
-                <!--                <ul>-->
-                <!--                    <li v-for="(evaluation,index) in evaluationList" :key="index" style="margin-bottom: 30px">-->
-                <!--                        <p>{{evaluation.content}}</p>-->
-                <!--                        <p>{{evaluation.score}}-<span>{{evaluation.host}}</span></p>-->
-                <!--                    </li>-->
-                <!--                </ul>-->
-                <!--            </div>-->
-                <!--关于这款游戏-->
-                <!-- DLC -->
                 <div class="m-tt fl">游戏拓展包</div>
-                <ul>
-                    <li v-for="(dlc,index) in 3" :key="index">
+                <ul  v-if="dlcList.length===dlcNum">
+                    <li v-for="(dlc,index) in dlcList.length" :key="index">
                         <div class="m-hot clearbox">
                             <div class="m-hot-left fl">
-                                <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
-                                    <img  :src="require('../../../ExGame-Asset/Game/'+ dlcIntro[index].poster)" alt=""  height="128" width="128">
+                                <router-link :to="{name:'GameDetail',params:{game_id:dlcList[index]}}">
+                                    <img  :src="require('../../../ExGame-Asset/'+ dlcIntro[index].poster)" alt=""  height="128" width="128">
                                 </router-link>
                             </div>
                             <div class="m-hot-right fr">
@@ -128,7 +117,7 @@
                                 <div>
                                     <div class="dlc-publish-time">发布于 {{ dlcInfo[index].dlcPublishDate }}</div>
                                     <router-link :to="{name:'ShoppingCart',params:{user_id:'000000001'}}">
-                                        <div class="dlc-add" @click="click2Cart()">加入购物车
+                                        <div class="dlc-add" @click="click2Cart(dlcList[index])">加入购物车
                                             <span v-if="dlcInfo[index].dlcDiscount!==100" style="text-decoration: line-through;color: #aaaaaa">￥{{ dlcInfo[index].dlcPrice}}</span>
                                             <span>&nbsp;￥{{ dlcInfo[index].dlcPrice * dlcInfo[index].dlcDiscount/100}}</span>
                                         </div>
@@ -138,12 +127,16 @@
                         </div>
                     </li>
                 </ul>
+                <div  v-if="dlcList.length===0" class="clearbox"
+                      style="height: 60px;line-height: 30px;margin-left: 30px;font-weight: bolder;font-size: 18px;color: #666666"
+                >
+                    当前游戏没有拓展包</div>
                 <div class="m-tt fl">关于这款游戏</div>
-                <div class="m-introduction">
+                <div class="m-introduction" style="min-height: 200px">
                     <ul>
                         <li v-for="(intro,index) in aboutGame" :key="index">
                             <a href="#">
-                                <img class='game-poster' :src="require('../../../ExGame-Asset/Game/'+ intro.poster)" alt="">
+                                <img class='game-poster' :src="require('../../../ExGame-Asset/'+ intro.poster)" alt="">
                             </a>
                             <div class="about-content">{{intro.content}}</div>
                         </li>
@@ -173,6 +166,7 @@ export default {
             uiLanguage:[],
             soundLanguage:[],
             textLanguage:[],
+            dlcNum:0
         }
     },
     mounted() {
@@ -182,7 +176,7 @@ export default {
         fun(){
             this.getConfigData(this.game_id);
             this.getAboutData(this.game_id);
-            this.getDLC();
+            setTimeout(this.getDLC,600)
         },
         add2Cart:function (gid,op){
             if(gid===null)
@@ -201,9 +195,9 @@ export default {
                 console.log(err);
             })
         },
-        click2Cart(){
+        click2Cart(id){
             console.log('++++++++++++++++++++++++++++++++')
-            this.add2Cart('0000000003',1)
+            this.add2Cart(id,1)
         },
         getConfigData:function (gid){
             var self = this;
@@ -248,8 +242,6 @@ export default {
                     {
                         self.textLanguage.push(res.data.text_language[i]);
                     }
-
-
                 }).catch( err => {
                     console.log(err);
                 })
@@ -276,21 +268,25 @@ export default {
                             console.log('GameCarousel 请求失败')
                             break;
                     }
+                    console.log(res.data.about_game)
                     for(i in res.data.about_game)
                     {
                         console.log('get   ' + res.data.about_game[i].poster)
                         console.log('get   ' + res.data.about_game[i].content)
                         // var path = res.data.about_game[i].poster + '.gif'
                         self.aboutGame.push({
-                            poster:this.game_id + '/Cover/cover.gif',
+                            poster:res.data.about_game[i].poster,
                             content: res.data.about_game[i].content,
                         }) ;
                     }
+                    console.log('dlc-list' + res.data.dlc_list)
                     for(i in res.data.dlc_list)
                     {
                         console.log('get  dlc  ' + res.data.dlc_list[i])
                         self.dlcList.push(res.data.dlc_list[i]) ;
                     }
+                    // console.log('dlc' + '0000000006')
+                    // self.dlcList.push('0000000006')
                 }).catch( err => {
                     console.log(err);
                 })
@@ -338,7 +334,7 @@ export default {
         },
         getAboutInfo:function (gid){
             var self = this;
-            console.log('++++++ getAboutData')
+            console.log('++++++ getAboutInfo')
             if(gid.length !== 0)
             {
                 this.$axios.post('api/gamedetail/getGameIntro', {
@@ -353,17 +349,15 @@ export default {
                             console.log('GameCarousel 请求失败')
                             break;
                     }
+                    console.log(res.data.about_game)
                     for(i in res.data.about_game)
                     {
-                        console.log('get   ' + res.data.about_game[i].poster)
-                        console.log('get   ' + res.data.about_game[i].content)
-                        // var path = res.data.about_game[i].poster + '.gif'
                         self.dlcIntro.push({
-                            poster:this.game_id + '/Cover/cover.gif',
+                            poster:res.data.about_game[i].poster,
                             content: res.data.about_game[i].content,
                         }) ;
-                        break;
                     }
+                    this.dlcNum++
                 }).catch( err => {
                     console.log(err);
                 })
@@ -373,17 +367,16 @@ export default {
             }
         },
         getDLC:function (){
-            // for(let i in this.dlcList)
-            // {
-            //     console.log(this.dlcList[i]);
-            //     this.getGameInfo(this.dlcList[i])
-            // }
-            this.getGameInfo(this.game_id);
-            this.getAboutInfo(this.game_id);
-            this.getGameInfo(this.game_id);
-            this.getAboutInfo(this.game_id);
-            this.getGameInfo(this.game_id);
-            this.getAboutInfo(this.game_id);
+            for(let i in this.dlcList) {
+                console.log(this.dlcList[i]);
+                var self = this
+                setTimeout(function(){
+                    self.getGameInfo(self.dlcList[i])
+                    self.getAboutInfo(self.dlcList[i])
+                },200)
+                // this.getGameInfo(this.dlcList[i])
+                // this.getAboutInfo(this.dlcList[i])
+            }
         },
     }
 }

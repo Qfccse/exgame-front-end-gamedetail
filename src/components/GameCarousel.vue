@@ -4,7 +4,6 @@
         <div>
             <div class="carousel-title">
                 {{gameName}}
-                RING
                 <router-link :to="{name:'GameColumn',params:{game_id:this.game_id}}">
                     <div class="to-column fr">
                         <span>前往论坛</span>
@@ -206,7 +205,7 @@ export default {
             })
         },
         click2Add:function (){
-          this.add2Cart('0000000003',1)
+          this.add2Cart(this.game_id,1)
         },
         init:function (){
             var that = this;

@@ -6,7 +6,7 @@
             <ul style="margin: auto;width: 1000px;" class="clearbox">
                 <li v-for="(game,index) in gameList" :key="index">
                     <div class="m-game-rec fl">
-                        <router-link :to="{name:'GameDetail',params:{game_id:'0000000001'}}">
+                        <router-link :to="{name:'GameDetail',params:{game_id:gameList[index]}}">
                             <div style="height: 125px;overflow: hidden">
                                 <img :src="require('../../../ExGame-Asset/Game/' +  gameIntro[index].coverPath)">
                             </div>
@@ -32,7 +32,7 @@ export default {
         }
     },
     mounted() {
-        this.getData('0000000002');
+        this.getData(this.game_id);
         setTimeout(this.fun,800)
     },
     methods:{
@@ -59,13 +59,7 @@ export default {
                 {
                     console.log(res.data.game_list[i])
                     this.gameList.push(
-                        {
-                            gid:'',
-                            coverPath:"ring.jpg",
-                            gameName:'ring',
-                            price:0,
-                            discount:100,
-                        },
+                        res.data.game_list[i]
                     )
                 }
             }).catch( err => {
@@ -142,8 +136,8 @@ export default {
         fun(){
             for(let i = 0;i<this.gameList.length;i++)
             {
-                this.getGameInfo(this.game_id);
-                this.getAboutInfo(this.game_id);
+                this.getGameInfo(this.gameList[i]);
+                this.getAboutInfo(this.gameList[i]);
             }
         }
     }

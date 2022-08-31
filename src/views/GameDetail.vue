@@ -1,14 +1,23 @@
 <!--张宇 1952168-->
 <template>
     <div class="canvas">
+<!--        <div style="height: 50px"></div>-->
+<!--        <GameCarousel :game_id="this.game_id"></GameCarousel>-->
+<!--        <div style="height: 50px"></div>-->
+<!--        <GameInfo :game_id="this.game_id"></GameInfo>-->
+<!--        <div style="height: 50px"></div>-->
+<!--        <GameRecommended :game_id="this.game_id"></GameRecommended>-->
+<!--        <div style="height: 50px"></div>-->
+<!--        <GameComments :game_id="this.game_id"></GameComments>-->
+<!--        <div style="height: 50px"></div>-->
         <div style="height: 50px"></div>
-        <GameCarousel :game_id="this.game_id"></GameCarousel>
+        <GameCarousel game_id="0000000006"></GameCarousel>
         <div style="height: 50px"></div>
-        <GameInfo :game_id="this.game_id"></GameInfo>
+        <GameInfo game_id="0000000006"></GameInfo>
         <div style="height: 50px"></div>
-        <GameRecommended :game_id="this.game_id"></GameRecommended>
+        <GameRecommended game_id="0000000006"></GameRecommended>
         <div style="height: 50px"></div>
-        <GameComments :game_id="this.game_id"></GameComments>
+        <GameComments game_id="0000000006"></GameComments>
         <div style="height: 50px"></div>
     </div>
 </template>
