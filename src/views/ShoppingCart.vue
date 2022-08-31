@@ -286,6 +286,15 @@ export default {
             {
                 if(this.chosenIndex[i]===true)
                 {
+                    console.log(this.gameList[i].id)
+                    // this.add2Library('0000000001',this.gameList[i].id)
+                    this.createOrder('0000000001',this.gameList[i].id,this.gameList[i].price*this.gameList[i].discount/100)
+                }
+            }
+            for(let i=0;i<this.gameList.length;i++)
+            {
+                if(this.chosenIndex[i]===true)
+                {
                     console.log('success' + this.gameList[i].id)
                     this.click2Delete(i)
                 }
@@ -310,6 +319,7 @@ export default {
                 document.getElementById('ali-pay').style.backgroundColor = 'transparent'
             }
             this.sec=10;
+
         },
         createQRcode (url) {
             var qrcode = document.getElementById("qrcode");
@@ -395,6 +405,65 @@ export default {
                             id:res.data.friends_list[i].id,
                         }
                     )
+                }
+            }).catch( err => {
+                console.log(err);
+            })
+        },
+        add2Library:function (uid,gid){
+            if(uid.length===0||gid.length===0)
+            {
+                alert('uid 不能为空')
+                return;
+            }
+            this.$axios.post('api/shopingcart/addToLibrary', {
+                user_id: uid,
+                game_id: gid,
+            }).then( res => {
+                switch(res.data.result){
+                    case 1:
+                        console.log("入库 请求成功");
+                        break;
+                    case -1:
+                        console.log('连接失败')
+                        break;
+                    default:
+                        console.log('入库 请求失败')
+                        break;
+                }
+            }).catch( err => {
+                console.log(err);
+            })
+        },
+        createOrder:function (uid,gid,pam){
+            if(gid.length!==10)
+            {
+                console.log('gid 必须为10')
+            }
+            if(uid.length!==10)
+            {
+                console.log('uid 必须为10')
+            }
+            if(pam<0)
+            {
+                console.log('付款金额不小于0')
+            }
+            console.log(new Date())
+            this.$axios.post('api/shopingcart/postOrders', {
+                user_id: uid,
+                game_id: gid,
+                pay_amount:pam,
+            }).then( res => {
+                switch(res.data.result){
+                    case 1:
+                        console.log("订单 请求成功");
+                        break;
+                    case -1:
+                        console.log('连接失败')
+                        break;
+                    default:
+                        console.log('订单 请求失败')
+                        break;
                 }
             }).catch( err => {
                 console.log(err);
@@ -567,7 +636,8 @@ ul, ol{
 }
 .select-bar{
     border: #aaaaaa 1px solid;
-    width: 320px;
+    /*width: 320px;*/
+    min-width: 310px;
     height: 180px;
     border-radius: 8px;
     align-items: center;
