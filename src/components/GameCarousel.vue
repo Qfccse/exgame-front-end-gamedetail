@@ -210,6 +210,7 @@ export default {
         init:function (){
             var that = this;
             var cut = this.videoList.length;
+            console.log('video-length' + cut.toString())
             for(let i =0;i<this.imageList.length;i++)
             {
                 this.sourceList.push({
@@ -245,6 +246,14 @@ export default {
             return pre  + index.toString();
         },
         click2Choose:function (pos){
+            if(this.launched===false) {
+                this.init();
+                this.launched = true;
+                console.log(this.imageList.length + '*')
+                console.log(this.videoList.length + '*')
+                console.log(this.showNum + '*')
+                console.log(this.mediaEnd + '*')
+            }
             console.log('choose = ' + pos.toString())
             this.onPlay = this.mediaMap[pos].index;
             this.anchorPos = pos;
@@ -263,14 +272,7 @@ export default {
             else
                 this.$refs["main-player-2"].src = require('../../../ExGame-Asset/' + this.getSourcePath(this.onPlay + 1,this.mediaMap[pos].srcType));
 
-            if(this.launched===false) {
-                this.init();
-                this.launched = true;
-                console.log(this.imageList.length + '*')
-                console.log(this.videoList.length + '*')
-                console.log(this.showNum + '*')
-                console.log(this.mediaEnd + '*')
-            }
+
         },
         click2Before:function (){
             if(this.onPlay===0)
